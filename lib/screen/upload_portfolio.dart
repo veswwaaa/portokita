@@ -152,7 +152,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         Text(
           'Gambar Portfolio',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF475B99),
+            color: Color(0xFF000000),
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
           ),
@@ -203,7 +203,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
                       Text(
                         'Upload Gambar',
                         style: GoogleFonts.plusJakartaSans(
-                          color: Color(0xFF475B99),
+                          color: Color(0xFF000000),
                           fontSize: 16.0,
                           fontWeight: FontWeight.w600,
                         ),
@@ -244,7 +244,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         Text(
           'Judul Portfolio',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF475B99),
+            color: Color(0xFF000000),
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
           ),
@@ -268,7 +268,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color(0xFF475B99), width: 2.0),
+              borderSide: BorderSide(color: Color(0xFF000000), width: 2.0),
             ),
           ),
         ),
@@ -284,7 +284,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         Text(
           'Deskripsi',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF475B99),
+            color: Color(0xFF000000),
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
           ),
@@ -309,7 +309,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color(0xFF475B99), width: 2.0),
+              borderSide: BorderSide(color: Color(0xFF000000), width: 2.0),
             ),
           ),
         ),
@@ -325,7 +325,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         Text(
           'Kategori',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF475B99),
+            color: Color(0xFF000000),
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
           ),
@@ -360,7 +360,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color(0xFF475B99), width: 2.0),
+              borderSide: BorderSide(color: Color(0xFF000000), width: 2.0),
             ),
           ),
         ),
@@ -376,7 +376,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         Text(
           'Tags',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF475B99),
+            color: Color(0xFF000000),
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
           ),
@@ -391,7 +391,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               fontSize: 14.0,
             ),
             suffixIcon: IconButton(
-              icon: Icon(Icons.add, color: Color(0xFF475B99)),
+              icon: Icon(Icons.add, color: Color(0xFF000000)),
               onPressed: () {
                 if (_tagController.text.isNotEmpty) {
                   setState(() {
@@ -411,7 +411,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color(0xFF475B99), width: 2.0),
+              borderSide: BorderSide(color: Color(0xFF000000), width: 2.0),
             ),
           ),
         ),
@@ -442,7 +442,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         Text(
           'Link Project (Opsional)',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF475B99),
+            color: Color(0xFF000000),
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
           ),
@@ -466,7 +466,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Color(0xFF475B99), width: 2.0),
+              borderSide: BorderSide(color: Color(0xFF000000), width: 2.0),
             ),
           ),
         ),

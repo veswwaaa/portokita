@@ -20,20 +20,22 @@ class _CardPortofolioState extends State<PortofolioCard> {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Container(
-                margin: EdgeInsets.only(bottom: 30.0,),
+                margin: EdgeInsets.only(bottom: 30.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF), ///
+                  color: Color(0xFFFFFFFF),
+
+                  ///
                   borderRadius: BorderRadius.circular(20.0),
 
                   boxShadow: [
                     BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, -2),
-                    )
-                  ]
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
                 ),
-                
+
                 width: 450,
                 height: 380,
                 child: Column(
@@ -44,7 +46,8 @@ class _CardPortofolioState extends State<PortofolioCard> {
                         "assets/img/img1.jpg",
                         width: double.infinity,
                         height: 250,
-                        fit: BoxFit.cover,),
+                        fit: BoxFit.cover,
+                      ),
                     ),
 
                     SizedBox(
@@ -89,24 +92,24 @@ class _CardPortofolioState extends State<PortofolioCard> {
                         ],
                       ),
                     ),
-                       Padding(
-                         padding: const EdgeInsets.only(left: 20.0),
-                         child: Row(
-                          children: [
-                            Icon(Icons.favorite_border, size: 20),
-                            SizedBox(width: 5),
-                            Text("725"),
-                            SizedBox(width: 20),
-                            Icon(Icons.chat_bubble_outline, size: 20),
-                            SizedBox(width: 5),
-                            Text("123"),
-                            SizedBox(width: 5),
-                            Icon(Icons.remove_red_eye_outlined, size: 20),
-                            SizedBox(width: 5),
-                            Text("1.2k"),
-                          ],
-                                               ),
-                       ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.favorite_border, size: 20),
+                          SizedBox(width: 5),
+                          Text("725"),
+                          SizedBox(width: 20),
+                          Icon(Icons.chat_bubble_outline, size: 20),
+                          SizedBox(width: 5),
+                          Text("123"),
+                          SizedBox(width: 5),
+                          Icon(Icons.remove_red_eye_outlined, size: 20),
+                          SizedBox(width: 5),
+                          Text("1.2k"),
+                        ],
+                      ),
+                    ),
                     // ),
                   ],
                 ),
