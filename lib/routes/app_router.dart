@@ -6,6 +6,8 @@ import '../screen/homepage.dart';
 import '../screen/searchpage.dart';
 import '../screen/upload_portfolio.dart';
 import '../screen/profilepage.dart';
+// import '../screen/splash_screen.dart';
+import '../screen/splash_screen1.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -14,9 +16,13 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: '/splash',
     routes: [
-  
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       // Shell Route dengan Bottom Navigation
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
