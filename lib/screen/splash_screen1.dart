@@ -158,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen>
 
           // Geser KESELURUHAN grup (Logo + Teks) secara animasi.
           // Dimulai dari 0 (tengah) dan berakhir di -50.0 (bergeser ke kiri)
-          final groupSlideOffset = _slideController.value * -50.0;
+          final groupSlideOffset = _slideController.value * -56.0;
 
           // Kalkulasi nilai pergeseran untuk Logo Naik dan Form Naik
           final screenHeight = MediaQuery.of(context).size.height;
@@ -185,8 +185,8 @@ class _SplashScreenState extends State<SplashScreen>
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Color(0xFFE88B35), Color(0xFF1B2E2E)],
-                          stops: [0.0, 0.4],
+                          colors: [Color(0xFFEE7F3C),Color(0xFF1B2E2E)],
+                          stops: [0.0, 0.9],
                         ),
                       ),
                     ),
@@ -282,11 +282,18 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// --------------------------------------------------------------------------
-// LOGIN SCREEN: Gradasi & Form Input
-// --------------------------------------------------------------------------
-class LoginFormContainer extends StatelessWidget {
+
+// login screen
+class LoginFormContainer extends StatefulWidget {
   const LoginFormContainer({super.key});
+
+  @override
+  State<LoginFormContainer> createState() => _LoginFormContainerState();
+}
+
+class _LoginFormContainerState extends State<LoginFormContainer> {
+  bool _rememberMe = false;
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -296,8 +303,8 @@ class LoginFormContainer extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(40),
-          topRight: Radius.circular(40),
+          topLeft: Radius.circular(50),
+          topRight: Radius.circular(50),
         ),
       ),
       child: Column(
@@ -323,30 +330,70 @@ class LoginFormContainer extends StatelessWidget {
           _buildTextField(
             hint: "masukkan password",
             icon: Icons.lock_outline,
-            isPass: true,
+            isPass: !_showPassword,
+            onPasswordVisibilityToggle: () {
+              setState(() {
+                _showPassword = !_showPassword;
+              });
+            },
           ),
 
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {},
-              child: const Text(
-                "Lupa Password?",
-                style: TextStyle(color: Color(0xFF4DB6AC)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value ?? false;
+                      });
+                      
+                    },
+                    activeColor: const Color(0xFF4DB6AC),
+                    
+                    ),
+                    Text(
+                  "Remember Me",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12,
+                  ),
+                ),
+                ],
               ),
-            ),
+
+              TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    "Lupa Password?",
+                    style: TextStyle(color: Color(0xFF4DB6AC)),
+                  ),
+                ),
+            ],
           ),
 
           // Tombol Login
-          SizedBox(
+          Container(
             width: double.infinity,
             height: 55,
+            decoration: BoxDecoration( 
+              gradient:  const LinearGradient(
+                colors: [Color(0xFFEE7F3C), Color(0xFFF49B33)],
+                begin: Alignment.topLeft,
+                end : Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(50),
+                
+            ),
+
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE88B35),
+                backgroundColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(50),
                 ),
                 elevation: 0,
               ),
@@ -439,6 +486,7 @@ class LoginFormContainer extends StatelessWidget {
     required String hint,
     required IconData icon,
     bool isPass = false,
+    VoidCallback? onPasswordVisibilityToggle,
   }) {
     return TextField(
       obscureText: isPass,
@@ -446,13 +494,19 @@ class LoginFormContainer extends StatelessWidget {
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
         prefixIcon: Icon(icon, color: const Color(0xFF4DB6AC)),
-        suffixIcon: isPass
-            ? const Icon(Icons.visibility_off_outlined, color: Colors.grey)
+        suffixIcon: isPass || onPasswordVisibilityToggle != null
+            ? GestureDetector(
+              onTap : onPasswordVisibilityToggle,
+              child: Icon(
+                _showPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                color: Colors.grey,
+              ),
+            )
             : null,
         filled: true,
         fillColor: const Color(0xFFE0F2F1), // Biru muda transparan sesuai video
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(50),
           borderSide: BorderSide.none,
         ),
       ),
