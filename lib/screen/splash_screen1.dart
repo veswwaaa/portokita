@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:portokita/services/auth_service.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const PortoKitaApp());
@@ -146,37 +148,29 @@ class _SplashScreenState extends State<SplashScreen>
           _upController,
         ]),
         builder: (context, child) {
-          // Evaluasi putaran menggunakan TweenSequence yang halus (0 -> 1 -> 0)
           final rotateProgress = _rotateAnimation.value;
           final rotateAngle = rotateProgress * (135 * math.pi / 180);
           final scaleValue = 1.0 + (rotateProgress * 1.5);
-          final logoSlideOffset = _slideController.value * -30.0;
+          final logoSlideOffset = _slideController.value * -45.0;
           final fadeValue = _slideController.value.clamp(0.0, 1.0);
-          // Sambil fade in, teks tampak meluncur sedikit ke kiri menuju posisi finalnya
-          final textSlideOffset =
-              60.0 + ((1.0 - _slideController.value) * 30.0);
 
-          // Geser KESELURUHAN grup (Logo + Teks) secara animasi.
-          // Dimulai dari 0 (tengah) dan berakhir di -50.0 (bergeser ke kiri)
+          final textSlideOffset =
+              59.0 + ((1.0 - _slideController.value) * 30.0);
+
           final groupSlideOffset = _slideController.value * -56.0;
 
-          // Kalkulasi nilai pergeseran untuk Logo Naik dan Form Naik
           final screenHeight = MediaQuery.of(context).size.height;
           final formOffset = (1.0 - _upAnimation.value) * screenHeight;
-          final logoUpOffset =
-              -_upAnimation.value *
-              (screenHeight *
-                  0.35); // <- Nilai 0.35 mengatur setinggi apa logo kita saat Login
+          final logoUpOffset = -_upAnimation.value * (screenHeight * 0.35);
 
           return SizedBox.expand(
             child: Stack(
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
-                // 1. Background Hitam Awal
+                
                 Positioned.fill(child: Container(color: Colors.black)),
 
-                // 2. Background Gradient (Muncul di saat slide horizontal)
                 Positioned.fill(
                   child: Opacity(
                     opacity: fadeValue,
@@ -185,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen>
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Color(0xFFEE7F3C),Color(0xFF1B2E2E)],
+                          colors: [Color(0xFFEE7F3C), Color(0xFF1B2E2E)],
                           stops: [0.0, 0.9],
                         ),
                       ),
@@ -193,7 +187,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                // 3. Form Login Meluncur Ke Atas
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -204,7 +197,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                // 4. Logo dan Teks Meluncur Ke Atas Secara Bersamaan
                 Transform.translate(
                   offset: Offset(groupSlideOffset, logoUpOffset),
                   child: Stack(
@@ -215,14 +207,11 @@ class _SplashScreenState extends State<SplashScreen>
                       Opacity(
                         opacity: fadeValue,
                         child: Transform.translate(
-                          offset: Offset(
-                            textSlideOffset,
-                            -20.0,
-                          ), // <- Geser dikit ke atas (nilai negatif untuk Y axis)
+                          offset: Offset(textSlideOffset, -20.0),
                           child: SvgPicture.asset(
                             'assets/img/logoText.svg',
-                            width: 225,
-                            // Filter warna jadi putih supaya lebih nyala di black background
+                            width: 270,
+
                             colorFilter: const ColorFilter.mode(
                               Colors.white,
                               BlendMode.srcIn,
@@ -231,7 +220,6 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
 
-                      // Lapisan Atas: Logo
                       Transform.translate(
                         offset: Offset(logoSlideOffset, 0),
                         child: Transform.scale(
@@ -239,9 +227,7 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Transform.rotate(
                             angle: rotateAngle,
                             child: AnimatedSwitcher(
-                              duration: const Duration(
-                                milliseconds: 150,
-                              ), // Ganti warna lebih cepat
+                              duration: const Duration(milliseconds: 150),
                               layoutBuilder:
                                   (
                                     Widget? currentChild,
@@ -259,12 +245,12 @@ class _SplashScreenState extends State<SplashScreen>
                                   ? SvgPicture.asset(
                                       'assets/img/logoPutih.svg',
                                       key: const ValueKey('white'),
-                                      width: 90,
+                                      width: 115,
                                     )
                                   : SvgPicture.asset(
                                       'assets/img/logo1.svg',
                                       key: const ValueKey('color'),
-                                      width: 90,
+                                      width: 115,
                                     ),
                             ),
                           ),
@@ -282,7 +268,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-
 // login screen
 class LoginFormContainer extends StatefulWidget {
   const LoginFormContainer({super.key});
@@ -294,6 +279,10 @@ class LoginFormContainer extends StatefulWidget {
 class _LoginFormContainerState extends State<LoginFormContainer> {
   bool _rememberMe = false;
   bool _showPassword = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool _isloading = false;
+  AuthService auth = new AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -323,13 +312,18 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
 
           // Form Fields
           _buildLabel("Email"),
-          _buildTextField(hint: "masukkan email", icon: Icons.email_outlined),
+          _buildTextField(
+            hint: "masukkan email",
+            icon: Icons.email_outlined,
+            textController: emailController,
+          ),
           const SizedBox(height: 15),
 
           _buildLabel("Password"),
           _buildTextField(
             hint: "masukkan password",
             icon: Icons.lock_outline,
+            textController: passwordController,
             isPass: !_showPassword,
             onPasswordVisibilityToggle: () {
               setState(() {
@@ -349,28 +343,23 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                       setState(() {
                         _rememberMe = value ?? false;
                       });
-                      
                     },
                     activeColor: const Color(0xFF4DB6AC),
-                    
-                    ),
-                    Text(
-                  "Remember Me",
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 12,
                   ),
-                ),
+                  Text(
+                    "Remember Me",
+                    style: TextStyle(color: Colors.black87, fontSize: 12),
+                  ),
                 ],
               ),
 
               TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Lupa Password?",
-                    style: TextStyle(color: Color(0xFF4DB6AC)),
-                  ),
+                onPressed: () {},
+                child: const Text(
+                  "Lupa Password?",
+                  style: TextStyle(color: Color(0xFF4DB6AC)),
                 ),
+              ),
             ],
           ),
 
@@ -378,18 +367,40 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
           Container(
             width: double.infinity,
             height: 55,
-            decoration: BoxDecoration( 
-              gradient:  const LinearGradient(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
                 colors: [Color(0xFFEE7F3C), Color(0xFFF49B33)],
                 begin: Alignment.topLeft,
-                end : Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(50),
-                
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(50),
             ),
 
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                setState(() => _isloading = true );
+                final user = await auth.login(
+                  email: emailController.text.trim(),
+                  password: passwordController.text,
+                );
+                if (!mounted) return;
+                setState(() => _isloading = false);
+
+                if (user != null) {
+                  context.go('/home');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Login Berhasil'),
+                    backgroundColor: Colors.greenAccent,
+                    )
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Email atau password salah. coba lagi"),
+                    backgroundColor: Colors.redAccent,
+                    )
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
@@ -397,7 +408,16 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
+              child: _isloading 
+              ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  color: Color(0xFFEE7F3C ),
+                  strokeWidth: 2.5,
+                ),
+              )
+                : const Text(
                 "Masuk",
                 style: TextStyle(
                   color: Colors.white,
@@ -421,12 +441,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
             height: 55,
             child: OutlinedButton.icon(
               onPressed: () {},
-              icon: const Icon(
-                Icons
-                    .g_mobiledata, // Menggunakan icon bawaan flutter sementara karena google_icon.svg belum ada di folder
-                size: 32,
-                color: Colors.red,
-              ),
+              icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.red),
               label: const Text(
                 "Masuk dengan Google",
                 style: TextStyle(color: Colors.black87),
@@ -487,8 +502,10 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
     required IconData icon,
     bool isPass = false,
     VoidCallback? onPasswordVisibilityToggle,
+    required TextEditingController textController,
   }) {
     return TextField(
+      controller: textController,
       obscureText: isPass,
       decoration: InputDecoration(
         hintText: hint,
@@ -496,12 +513,14 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
         prefixIcon: Icon(icon, color: const Color(0xFF4DB6AC)),
         suffixIcon: isPass || onPasswordVisibilityToggle != null
             ? GestureDetector(
-              onTap : onPasswordVisibilityToggle,
-              child: Icon(
-                _showPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                color: Colors.grey,
-              ),
-            )
+                onTap: onPasswordVisibilityToggle,
+                child: Icon(
+                  _showPassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: Colors.grey,
+                ),
+              )
             : null,
         filled: true,
         fillColor: const Color(0xFFE0F2F1), // Biru muda transparan sesuai video
