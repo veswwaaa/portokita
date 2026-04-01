@@ -168,7 +168,7 @@ class _SplashScreenState extends State<SplashScreen>
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
-                
+
                 Positioned.fill(child: Container(color: Colors.black)),
 
                 Positioned.fill(
@@ -283,6 +283,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
   TextEditingController passwordController = TextEditingController();
   bool _isloading = false;
   AuthService auth = new AuthService();
+
 
   @override
   Widget build(BuildContext context) {
