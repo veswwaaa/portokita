@@ -284,7 +284,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
   bool _isloading = false;
   AuthService auth = new AuthService();
 
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -348,7 +348,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                     activeColor: const Color(0xFF4DB6AC),
                   ),
                   Text(
-                    "Remember Me",
+                    "Remember Me ",
                     style: TextStyle(color: Colors.black87, fontSize: 12),
                   ),
                 ],
