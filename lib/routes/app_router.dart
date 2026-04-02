@@ -8,6 +8,7 @@ import '../screen/upload_portfolio.dart';
 import '../screen/profilepage.dart';
 // import '../screen/splash_screen.dart';
 import '../screen/splash_screen1.dart';
+import '../screen/register_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -22,6 +23,11 @@ class AppRouter {
         path: '/splash',
         name: 'splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        name: 'register',
+        builder: (context, state) => const RegisterScreen(),
       ),
       // Shell Route dengan Bottom Navigation
       ShellRoute(

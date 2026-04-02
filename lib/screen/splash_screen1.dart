@@ -5,6 +5,7 @@ import 'package:flutter/physics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:portokita/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
+import '../screen/register_screen.dart';
 
 void main() {
   runApp(const PortoKitaApp());
@@ -459,27 +460,23 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
           const SizedBox(height: 25),
 
           // Footer Daftar
-          Center(
-            child: RichText(
-              text: TextSpan(
-                text: "Belum punya akun? ",
-                style: const TextStyle(color: Colors.black87),
-                children: [
-                  WidgetSpan(
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        "Daftar",
-                        style: TextStyle(
-                          color: Color(0xFF4DB6AC),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Belum punya akun?",
+                style: TextStyle(color: Colors.black),
               ),
-            ),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                  );
+                }, 
+                child: Text("Daftar", style: TextStyle(color: Color(0xFF4DB6AC)),)
+              )
+            ]
           ),
         ],
       ),
