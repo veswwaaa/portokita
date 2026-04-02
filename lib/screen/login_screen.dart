@@ -162,33 +162,6 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
             ),
           ),
 
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Center(
-              child: Text("atau", style: TextStyle(color: Colors.grey)),
-            ),
-          ),
-
-          // Tombol Google
-          SizedBox(
-            width: double.infinity,
-            height: 55,
-            child: OutlinedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.red),
-              label: const Text(
-                "Masuk dengan Google",
-                style: TextStyle(color: Colors.black87),
-              ),
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                side: const BorderSide(color: Colors.black12),
-              ),
-            ),
-          ),
-
           const SizedBox(height: 25),
 
           // Footer Daftar

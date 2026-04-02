@@ -7,7 +7,7 @@ import '../models/user_model.dart';
 class AuthService {
   final FirebaseService _firebaseService = FirebaseService();
 
-  Future<UserModel?> register({
+  Future<Map<String, dynamic>> register({
     required String email,
     required String password,
     required String username,
@@ -21,8 +21,14 @@ class AuthService {
       // ambil user object dari hasil register
       User? firebaseUser = userCredential.user;
 
+
+
       if (firebaseUser == null) {
-        return null;
+        return {
+          'success': false,
+          'user': null,
+          'message': 'Register gagal',
+        };
       }
 
       // buat data user untuk disimpan firestore
@@ -40,14 +46,48 @@ class AuthService {
           .doc(firebaseUser.uid)
           .set(newUser.toFirestore());
 
-      //return useModel yang baru dibuat
-      return newUser;
+
+      return {
+        'success': true,
+        'user': newUser,
+        'message': 'Register berhasil',
+      };
+
+      //handler error firebase untuk notif di UI
     } on FirebaseAuthException catch (e) {
       print('error register: ${e.code} - ${e.message}');
-      return null;
+      if(e.code == 'email-already-in-use') {
+        return {
+          'success': false,
+          'user': null,
+          'message': 'Email sudah digunakan, silakan gunakan email lain',
+        };
+      } else if (e.code == 'weak-password') {
+        return {
+          'success': false,
+          'user': null,
+          'message': 'Password terlalu lemah, gunakan minimal 8 karakter',
+        };
+      } else if (e.code == 'invalid-email') {
+        return {
+          'success': false,
+          'user': null,
+          'message': 'Email tidak valid, silakan periksa kembali',
+        };
+      } else {
+        return {
+          'success': false,
+          'user': null,
+          'message': 'Gagal register: ${e.message}',
+        };
+      }
     } catch (e) {
       print('eror register: $e');
-      return null;
+      return {
+        'success': false,
+        'user': null,
+        'message': 'Terjadi kesalahan saat register, coba lagi',
+      };
     }
   }
 

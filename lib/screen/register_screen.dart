@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portokita/services/auth_service.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class RegisterFormContainer extends StatefulWidget {
   const RegisterFormContainer({super.key});
@@ -85,7 +86,7 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
 
           final screenHeight = MediaQuery.of(context).size.height;
           final formOffset = (1.0 - _upAnimation.value) * screenHeight;
-
+          final logoUpOffset = formOffset - (screenHeight * 0.35); 
           return SizedBox.expand(
             child: Stack(
               alignment: Alignment.center,
@@ -106,6 +107,34 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                         ),
                       ),
                     ),
+                  ),
+                ),
+
+                Transform.translate(
+                  offset: Offset(0, logoUpOffset),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Transform.translate(
+                        offset: const Offset(5.0, -20.0),
+                        child: SvgPicture.asset(
+                          'assets/img/logoText.svg',
+                          width: 270,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(-105.0, 0.0),
+                        child: SvgPicture.asset(
+                          'assets/img/logoPutih.svg',
+                          width: 115,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -237,18 +266,18 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                     }
                     setState(() => _isloading = false);
 
-                    if (user != null) {
-                      context.go('/home');
+                    if(user['success'] == true) {
+                      context.go('/splash');
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Register berhasil'),
-                          backgroundColor: Colors.green,
+                          content: Text('Register Berhasil'),
+                          backgroundColor: Colors.greenAccent,
                         ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Gagal register, coba lagi'),
+                        SnackBar(
+                          content: Text(user['message'] ?? 'Register Gagal'),
                           backgroundColor: Colors.redAccent,
                         ),
                       );
@@ -290,7 +319,7 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                   ),
                   TextButton(
                     onPressed: () {
-                      context.go('/login');
+                      context.go('/splash');
                     },
                     child: const Text(
                       'Masuk',
