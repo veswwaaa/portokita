@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    _selectedTabIndex = index;
+                    _selectedTabIndex = index;      
                   });
                 },
                 child: Container(
