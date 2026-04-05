@@ -38,18 +38,23 @@ class _HomePageState extends State<HomePage> {
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('portofolios').snapshots() , 
                     builder: (context, snapshot) { 
+
+                      //cek loading
                       if(snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } 
 
+                      //cek jika error
                       if(snapshot.hasError) {
                         return  Center(child: Text("error : ${snapshot.error}"));
                       } 
 
+                      //cek jika data kosong
                       if(!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return const Center(child: Text("belum ada portofolio"));
                       }
 
+                      //jika aman baru ambil data
                       final dataPorto = snapshot.data!.docs;
 
 
