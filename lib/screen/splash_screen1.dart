@@ -139,6 +139,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: AnimatedBuilder(
         animation: Listenable.merge([
           _rotateController,
@@ -186,6 +187,7 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
 
                 Positioned(
+                  top: screenHeight * 0.28,
                   bottom: 0,
                   left: 0,
                   right: 0,

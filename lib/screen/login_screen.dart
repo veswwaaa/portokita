@@ -147,7 +147,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                       width: 22,
                       height: 22,
                       child: CircularProgressIndicator(
-                        color: Color(0xFFEE7F3C),
+                        color: Color.fromARGB(255, 255, 255, 255),
                         strokeWidth: 2.5,
                       ),
                     )

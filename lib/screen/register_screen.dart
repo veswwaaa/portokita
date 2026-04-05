@@ -75,6 +75,7 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: AnimatedBuilder(
         animation: Listenable.merge([
           _slideController,
@@ -84,7 +85,9 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
           final fadeValue = _slideController.value.clamp(0.0, 1.0);
 
 
+          final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
           final screenHeight = MediaQuery.of(context).size.height;
+
           final formOffset = (1.0 - _upAnimation.value) * screenHeight;
           final logoUpOffset = formOffset - (screenHeight * 0.35); 
           return SizedBox.expand(
@@ -139,7 +142,8 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                 ),
 
                 Positioned(
-                  bottom: 0,
+                  top: screenHeight * 0.28,
+                  bottom: keyboardHeight,
                   left: 0,
                   right: 0,
                   child: Transform.translate(
@@ -212,35 +216,9 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                   });
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _rememberMe,
-                        onChanged: (value) {
-                          setState(() {
-                            _rememberMe = value ?? false;
-                          });
-                        },
-                        activeColor: const Color(0xFF4DB6AC),
-                      ),
-                      const Text(
-                        'Remember Me ',
-                        style: TextStyle(color: Colors.black87, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Lupa Password?',
-                      style: TextStyle(color: Color(0xFF4DB6AC)),
-                    ),
-                  ),
-                ],
-              ),
+
+              SizedBox(height: 15),
+
               Container(
                 width: double.infinity,
                 height: 55,
@@ -384,6 +362,7 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
 
   Widget _buildDropdownField() {
     return DropdownButtonFormField<String>(
+      isExpanded: true,
       value: _selectJurusan,
       hint: const Text(
         "pilih jurusan kamu",
@@ -410,8 +389,9 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
             "Animasi",
           ].map((String category) {
             return DropdownMenuItem<String>(
+
               value: category,
-              child: Text(category),
+              child: Text(category,overflow: TextOverflow.ellipsis,),
             );
           }).toList(),
       onChanged: (String? newValue) {
