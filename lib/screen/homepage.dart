@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 20.0,
+                    horizontal: 20.0,   
                     vertical: 10.0,
                   ),
                   decoration: BoxDecoration(
