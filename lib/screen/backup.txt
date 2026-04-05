@@ -11,7 +11,7 @@ Scaffold(
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: [  nbjk
                 const Text(
                   "Daftar",
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
