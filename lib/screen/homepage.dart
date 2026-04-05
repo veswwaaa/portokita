@@ -63,7 +63,9 @@ class _HomePageState extends State<HomePage> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: dataPorto.length,
                       itemBuilder: (context , index){
-                        return PortofolioCard(data: dataPorto[index]);
+                        return PortofolioCard(
+                          data: dataPorto[index]
+                        );
                       },
                       );
                     }
