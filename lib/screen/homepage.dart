@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(   
                     horizontal: 20.0,   
                     vertical: 10.0,
                   ),
