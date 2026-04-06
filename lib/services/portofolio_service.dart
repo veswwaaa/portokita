@@ -237,4 +237,15 @@ class PortofolioService {
   bool isLikedByUser(Portofolio portfolio, String userId) {
     return portfolio.likedBy.contains(userId);
   }
+
+  // increment views
+  Future<void> incrementViews(String portfolioId) async {
+    try {
+      await _firebaseService.PortofolioCollection.doc(portfolioId).update({
+        'views': FieldValue.increment(1),
+      });
+    } catch (e) {
+      print('Error increment views: $e');
+    }
+  }
 }

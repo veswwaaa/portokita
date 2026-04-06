@@ -6,8 +6,8 @@ import 'dart:typed_data';
 import '../services/portofolio_service.dart';
 import '../services/image_upload_service.dart';
 import '../services/firebase_service.dart';
+import '../services/auth_service.dart';
 import '../models/portofolio_model.dart';
-import '../models/user_model.dart';
 
 class UploadPortfolio extends StatefulWidget {
   const UploadPortfolio({super.key});
@@ -121,7 +121,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
                   Text(
                     'Upload Portfolio',
                     style: GoogleFonts.plusJakartaSans(
-                     color: Colors.white,
+                      color: Colors.white,
                       fontSize: 22.0,
                       fontWeight: FontWeight.w700,
                     ),
@@ -531,15 +531,25 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             }
             print(' Gambar berhasil diupload: $uploadedUrl');
 
-            // Dummy user
-            final dummyUser = UserModel(
-              id: 'dummyUser123',
-              username: 'User Dummy',
-              email: 'dummy@gmail.com',
-              kategori: 'RPL',
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-            );
+            // Ambil user yang sedang login
+            final authService = AuthService();
+            final currentUser = await authService.getCurrentUserData();
+
+            if (currentUser == null) {
+              if (isDialogShowing && mounted) {
+                Navigator.of(scaffoldContext, rootNavigator: true).pop();
+                isDialogShowing = false;
+              }
+              if (mounted) {
+                ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                  SnackBar(
+                    content: Text('Sesi telah habis, silakan login kembali.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+              return;
+            }
 
             // Upload portfolio ke Firebase
             await _portfolioService.uploadPortfolio(
@@ -551,7 +561,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               linkProject: _linkController.text.isNotEmpty
                   ? _linkController.text
                   : null,
-              currentUser: dummyUser,
+              currentUser: currentUser,
             );
 
             print(' Portfolio berhasil tersimpan!');

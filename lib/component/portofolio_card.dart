@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/portofolio_service.dart';
+import '../services/firebase_service.dart';
+import '../models/portofolio_model.dart';
 
 
 
@@ -15,16 +18,27 @@ class PortofolioCard extends StatefulWidget {
 }
 
 class _CardPortofolioState extends State<PortofolioCard> {
+  final PortofolioService _portofolioService = PortofolioService();
+  final FirebaseService _firebaseService = FirebaseService();
+
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> docData = widget.data.data() as Map<String, dynamic>;
+    Portofolio porto = Portofolio.fromFirestore(docData, widget.data.id);
+    String? currentUserId = _firebaseService.currentUserId;
+    bool isLiked = currentUserId != null && porto.likedBy.contains(currentUserId);
+
     return GestureDetector(
       onTap: () {
+        // Increment view count when opening detail
+        _portofolioService.incrementViews(porto.id);
+
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           builder: (context) {
-            return _buildDetailPopUp(context);
+            return _buildDetailPopUp(context, porto);
           }
           );
       },
@@ -56,7 +70,7 @@ class _CardPortofolioState extends State<PortofolioCard> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20.0),
                         child: Image.network(
-                          widget.data['imageUrl'],
+                          porto.imageUrl.isNotEmpty ? porto.imageUrl : 'https://placehold.co/600x400.png',
                           width: double.infinity,
                           height: 250,
                           fit: BoxFit.cover,
@@ -68,7 +82,7 @@ class _CardPortofolioState extends State<PortofolioCard> {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10.0, left: 20.0),
                           child: Text(
-                            widget.data['title'],
+                            porto.title,
                             textAlign: TextAlign.left,
                             style: TextStyle(fontWeight: FontWeight.w800),
                           ),
@@ -97,7 +111,7 @@ class _CardPortofolioState extends State<PortofolioCard> {
       
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10.0),
-                                    child: Text(widget.data['username']),
+                                    child: Text(porto.username),
                                   ),
                                 ],
                               ),
@@ -109,17 +123,28 @@ class _CardPortofolioState extends State<PortofolioCard> {
                         padding: const EdgeInsets.only(left: 20.0),
                         child: Row(
                           children: [
-                            Icon(Icons.favorite_border, size: 20),
+                            GestureDetector(
+                              onTap: () async {
+                                if (currentUserId != null) {
+                                  await _portofolioService.toggleLike(porto, currentUserId);
+                                }
+                              },
+                              child: Icon(
+                                isLiked ? Icons.favorite : Icons.favorite_border, 
+                                size: 20, 
+                                color: isLiked ? Colors.red : Colors.black
+                              ),
+                            ),
                             SizedBox(width: 5),
-                            Text("725"),
+                            Text(porto.likes.toString()),
                             SizedBox(width: 20),
                             Icon(Icons.chat_bubble_outline, size: 20),
                             SizedBox(width: 5),
-                            Text("123"),
+                            Text(porto.comments.toString()),
                             SizedBox(width: 5),
                             Icon(Icons.remove_red_eye_outlined, size: 20),
                             SizedBox(width: 5),
-                            Text("1.2k"),
+                            Text(porto.views.toString()),
                           ],
                         ),
                       ),
@@ -133,7 +158,7 @@ class _CardPortofolioState extends State<PortofolioCard> {
     );
       }
 
-      Widget _buildDetailPopUp(BuildContext context) {
+      Widget _buildDetailPopUp(BuildContext context, Portofolio porto) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.90,
           decoration: const BoxDecoration(
@@ -148,40 +173,49 @@ class _CardPortofolioState extends State<PortofolioCard> {
             padding: const EdgeInsets.only(bottom: 20),
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30)
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30)
                 ),
-                child: Image.network(
-                  (widget.data.data() as Map<String,dynamic>).containsKey('imageUrl')
-                  ? widget.data['imageUrl']
-                  : Icon(Icons.broken_image),
-                  height: 250,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child: porto.imageUrl.isNotEmpty
+                  ? Image.network(
+                      porto.imageUrl,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
+                  : const SizedBox(
+                      height: 250,
+                      child: Center(child: Icon(Icons.broken_image, size: 50)),
+                    ),
               ),
 
               Padding(
-                padding: const EdgeInsetsGeometry.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.data['title'] ?? 'Unknown Title',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      porto.title,
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
-                        Icon(Icons.person),
-                        SizedBox(width: 15),
-                        Text(widget.data['username'] ?? 'Unknown User'),
+                        const Icon(Icons.person),
+                        const SizedBox(width: 15),
+                        Text(porto.username),
                       ],
                     ),
 
-                    SizedBox(height: 10,),
-                    Divider()
+                    const SizedBox(height: 10),
+                    const Divider(),
+                    
+                    // Comments Section Placeholder
+                    const SizedBox(height: 10),
+                    const Text('Komentar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    const Center(child: Text('Belum ada komentar.')),
                   ],
                 ),
               )
