@@ -42,14 +42,13 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
             style: TextStyle(color: Colors.black54, fontSize: 14),
           ),
           const SizedBox(height: 30),
-
           // Form Fields
           _buildLabel("Email"),
           _buildTextField(
             hint: "masukkan email",
             icon: Icons.email_outlined,
             textController: emailController,
-          ),
+          ),           
           const SizedBox(height: 15),
 
           _buildLabel("Password"),
