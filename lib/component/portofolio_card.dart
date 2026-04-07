@@ -177,7 +177,7 @@ class _CardPortofolioState extends State<PortofolioCard> {
                             isLiked ? Icons.favorite : Icons.favorite_border,
                             size: 20,
                             color: isLiked ? Colors.red : Colors.black,
-                          ),
+                          ),      
                         ),
                         SizedBox(width: 5),
                         Text(porto.likes.toString()),

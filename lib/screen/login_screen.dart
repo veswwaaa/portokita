@@ -60,7 +60,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
             isPass: !_showPassword,
             onPasswordVisibilityToggle: () {
               setState(() {
-                _showPassword = !_showPassword;
+                _showPassword = !_showPassword;                
               });
             },
           ),
