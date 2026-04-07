@@ -80,7 +80,7 @@ class PortofolioService {
       return getAllPortfolios();
     }
 
-    //filter by jkategori
+    //filter by kategori nih
 
     return _firebaseService.PortofolioCollection.where(
       'kategori',
