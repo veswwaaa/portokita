@@ -216,9 +216,11 @@ class PortofolioService {
     }
   }
 
+      //hapus porto
   Future<bool> deletePortfolio(String portfolioId, String userId) async {
     try {
-      // Hapus document portfolio
+      
+      // Hapus document portfolio di firestore
       await _firebaseService.PortofolioCollection.doc(portfolioId).delete();
 
       // Update user: hapus dari myPortofolios
