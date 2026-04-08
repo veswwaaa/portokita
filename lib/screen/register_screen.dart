@@ -13,7 +13,6 @@ class RegisterFormContainer extends StatefulWidget {
 
 class _RegisterFormContainerState extends State<RegisterFormContainer>
     with TickerProviderStateMixin {
-  bool _rememberMe = false;
   bool _showPassword = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();

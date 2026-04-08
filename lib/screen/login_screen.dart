@@ -113,10 +113,10 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                 final user = await auth.login(
                   email: emailController.text.trim(),
                   password: passwordController.text,
+                  rememberMe: _rememberMe
                 );
                 if (!mounted) return;
                 setState(() => _isloading = false);
-
                 if (user != null) {
                   context.go('/home');
                   ScaffoldMessenger.of(context).showSnackBar(

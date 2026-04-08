@@ -1,6 +1,7 @@
 import 'package:portokita/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_service.dart';
 import '../models/user_model.dart';
 
@@ -96,11 +97,20 @@ class AuthService {
   Future<UserModel?> login({
     required String email,
     required String password,
+    required bool rememberMe
   }) async {
     print("login function calling");
     try {
       UserCredential userCredential = await _firebaseService.auth
-          .signInWithEmailAndPassword(email: email, password: password);
+      .signInWithEmailAndPassword(email: email, password: password);
+      SharedPreferences prefs = await
+      SharedPreferences.getInstance();
+      if(rememberMe == true) {
+        await prefs.setBool('remember_me',true);
+
+      }else{
+        await prefs.setBool('remember_me', false);
+      }
       print(email);
       print(password);
 
@@ -142,6 +152,10 @@ class AuthService {
   //logout
   Future<void> logout() async {
     try {
+      SharedPreferences prefs = await
+      SharedPreferences.getInstance();
+      await prefs.setBool('remember_me', false);
+
       await _firebaseService.auth.signOut();
     } catch (e) {
       print('eror logou: $e');

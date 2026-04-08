@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:portokita/screen/register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 import '../screen/login_screen.dart';
 
 void main() {
@@ -31,7 +34,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-  with TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _rotateController;
   late Animation<double> _rotateAnimation;
 
@@ -91,6 +94,19 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _runAnimations() async {
+
+    SharedPreferences prefs = await 
+    SharedPreferences.getInstance();
+      bool rememberMe = prefs.getBool('remember_me') ?? false;
+
+      User? user = FirebaseAuth.instance.currentUser;
+
+      bool isLoggedIn = (user != null && rememberMe);
+
+      if(user != null && !rememberMe) { 
+        await FirebaseAuth.instance.signOut();
+      }
+
     // Tunggu sebentar sebelum mulai
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -122,9 +138,13 @@ class _SplashScreenState extends State<SplashScreen>
     // Tunggu sebentar sesusah geser
     await Future.delayed(const Duration(milliseconds: 200));
 
+    if(isLoggedIn && mounted) {
+      context.go('/home');
+    }else {
     // 3. Geser ke Atas dan Tampilkan Form!
-    if (mounted) {
-      _upController.forward();
+      if  (mounted) {
+        _upController.forward();
+      }
     }
   }
 
@@ -167,7 +187,6 @@ class _SplashScreenState extends State<SplashScreen>
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
-
                 Positioned.fill(child: Container(color: Colors.black)),
 
                 Positioned.fill(
@@ -267,5 +286,3 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
-
-
