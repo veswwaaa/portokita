@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'upload_portfolio.dart';
 import '../component/portofolio_card.dart';
+import '../services/auth_service.dart';
+import '../models/user_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,28 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedTabIndex = 0;
   final List<String> _tabs = ['Semua', 'RPL', 'TKJ', 'Animasi', 'TJAT', 'DKV'];
+
+  final AuthService _authService = AuthService();
+  String _username = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    if (AuthService.cachedUser != null) {
+      _username = AuthService.cachedUser!.username;
+    }
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    UserModel? user = await _authService.getCurrentUserData();
+    if(mounted) {
+      setState(() {
+        _username = user?.username ?? 'Guest';
+      });
+    }
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
                   child: Text(
-                    'Erlangga Jmbt',
+                    _username,
                     style: GoogleFonts.plusJakartaSans(
                       color: Color(0xFFFFFFFF),
                       fontWeight: FontWeight.w800,

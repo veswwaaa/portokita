@@ -6,6 +6,7 @@ import 'firebase_service.dart';
 import '../models/user_model.dart';
 
 class AuthService {
+  static UserModel? cachedUser;
   final FirebaseService _firebaseService = FirebaseService();
 
   Future<Map<String, dynamic>> register({
@@ -139,9 +140,11 @@ class AuthService {
         userDoc.id,
       );
 
+      cachedUser = userModel;
+
       //return userModel
       print("login berhasil");
-      print(userModel);
+      print(userModel.username);
       return userModel;
     } catch (e) {
       print('error login ${e} - ${e}');
@@ -152,6 +155,7 @@ class AuthService {
   //logout
   Future<void> logout() async {
     try {
+      cachedUser = null;
       SharedPreferences prefs = await
       SharedPreferences.getInstance();
       await prefs.setBool('remember_me', false);
@@ -165,6 +169,10 @@ class AuthService {
   //mengambil data user yang sedang login dari firebase
   Future<UserModel?> getCurrentUserData() async {
     try {
+      if (cachedUser != null) {
+        return cachedUser;
+      }
+      
       String? userId = _firebaseService.currentUserId;
 
       if (userId == null) {
@@ -179,10 +187,13 @@ class AuthService {
         return null;
       }
 
-      return UserModel.fromFirestore(
+      UserModel userModel = UserModel.fromFirestore(
         userDoc.data() as Map<String, dynamic>,
         userDoc.id,
       );
+      
+      cachedUser = userModel;
+      return userModel;
     } catch (e) {
       print('error get current user: $e');
       return null;

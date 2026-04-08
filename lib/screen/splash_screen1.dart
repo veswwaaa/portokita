@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import '../screen/login_screen.dart';
+import '../services/auth_service.dart';
 
 void main() {
   runApp(const PortoKitaApp());
@@ -107,10 +108,15 @@ class _SplashScreenState extends State<SplashScreen>
         await FirebaseAuth.instance.signOut();
       }
 
+      // pre fetch user data
+      if (isLoggedIn) {
+        AuthService().getCurrentUserData();
+      }
+
     // Tunggu sebentar sebelum mulai
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // 1. Jalankan rotasi (otomatis balik dari 0 -> 1 -> 0 sesuai TweenSequence)
+    // Jalankan rotasi (otomatis balik dari 0 -> 1 -> 0 sesuai TweenSequence)
     if (mounted) {
       await _rotateController.forward();
     }
