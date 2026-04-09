@@ -85,13 +85,17 @@ class PortofolioService {
     return _firebaseService.PortofolioCollection.where(
       'kategori',
       isEqualTo: kategori,
-    ).orderBy('createdAt', descending: true).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
+    ).snapshots().map((snapshot) {
+      final list = snapshot.docs.map((doc) {
         return Portofolio.fromFirestore(
           doc.data() as Map<String, dynamic>,
           doc.id,
         );
       }).toList();
+      
+      // Sort manual di Dart untuk menghindari error "Missing Index" di Firestore
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return list;
     });
   }
 
@@ -110,13 +114,17 @@ class PortofolioService {
     return _firebaseService.PortofolioCollection.where(
       'userId',
       isEqualTo: userId,
-    ).orderBy('createdAt', descending: true).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
+    ).snapshots().map((snapshot) {
+      final list = snapshot.docs.map((doc) {
         return Portofolio.fromFirestore(
           doc.data() as Map<String, dynamic>,
           doc.id,
         );
       }).toList();
+
+      // Sort manual di Dart untuk menghindari error "Missing Index" di Firestore
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return list;
     });
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import '../models/portofolio_model.dart';
 import '../services/auth_service.dart';
@@ -14,6 +15,23 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final PortofolioService _portofolioService = PortofolioService();
+
+  Widget _statItem(String value, String label) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          Text(
+            label,
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _menuItem(IconData icon, String label, String count, bool isDanger) {
     return ListTile(
@@ -161,73 +179,109 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                        //username masih hardcode juga
-                        Text(
-                          "Agung",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.black,
-                          ),
-                        ),
-                        //bagian jurusan masih hardcodee
-                        Text(
-                          "Rekayasa  Perangkat Lunak",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.black,
-                          ),
-                        ),
-                        //bagian email profile masih hardcodee
-                        Text(
-                          "vanoaji402@gmail.com",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Divider(),
+                        // ── DATA USER DINAMIS ──
+                        StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseService().usersCollection.doc(currentUserId).snapshots(),
+                          builder: (context, userSnapshot) {
+                            if (!userSnapshot.hasData) {
+                              return Column(
+                                children: [
+                                  Text("Loading...", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900)),
+                                  Text("...", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
+                                  Text("...", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
+                                ],
+                              );
+                            }
 
-                        //bagian jumlah porto,like sama views masih hardcode
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [Text("12"), Text("Portofolio")],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [Text("190"), Text("likes")],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [Text("2k"), Text("views")],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(),
+                            final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
+                            final username = userData?['username'] ?? 'No Name';
+                            final email = userData?['email'] ?? '-';
+                            final kategori = userData?['kategori'] ?? '-';
+                            final bio = userData?['bio'] ?? 'Passionate developer yang suka membuat aplikasi web dan mobile. Always learning, always coding! 🚀';
 
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 12.0,
-                            right: 12.0,
-                            top: 10,
-                          ),
-                          child: Text(
-                            '"Passionate developer yang suka membuat aplikas web dan mobile. Always learning, always coding! 🚀"',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            return Column(
+                              children: [
+                                Text(
+                                  username,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  kategori,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  email,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Divider(),
+
+                                // ── STATISTIK DINAMIS ──
+                                StreamBuilder<List<Portofolio>>(
+                                  stream: _portofolioService.getPortofoliosByUserId(currentUserId),
+                                  builder: (context, portoSnapshot) {
+                                    if (portoSnapshot.connectionState == ConnectionState.waiting) {
+                                      return Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          _statItem("...", "Portofolio"),
+                                          _statItem("...", "Likes"),
+                                          _statItem("...", "Views"),
+                                        ],
+                                      );
+                                    }
+
+                                    int totalPortos = 0;
+                                    int totalLikes = 0;
+                                    int totalViews = 0;
+
+                                    if (portoSnapshot.hasData) {
+                                      final portos = portoSnapshot.data!;
+                                      totalPortos = portos.length;
+                                      for (var p in portos) {
+                                        totalLikes += p.likes;
+                                        totalViews += p.views;
+                                      }
+                                    }
+
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        _statItem(totalPortos.toString(), "Portofolio"),
+                                        _statItem(totalLikes.toString(), "Likes"),
+                                        _statItem(totalViews.toString(), "Views"),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                Divider(),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10),
+                                  child: Text(
+                                    '"$bio"',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
