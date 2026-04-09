@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:portokita/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,7 +47,8 @@ class AuthService {
       // simpan data user ke fireStrore collection user
       await _firebaseService.usersCollection
           .doc(firebaseUser.uid)
-          .set(newUser.toFirestore());
+          .set(newUser.toFirestore())
+          .timeout(const Duration(seconds: 10));
 
 
       return {
@@ -125,11 +127,11 @@ class AuthService {
       // ambil data user dari firestore
       DocumentSnapshot userDoc = await _firebaseService.usersCollection
           .doc(firebaseUser.uid)
-          .get();
+          .get()
+          .timeout(const Duration(seconds: 10));
 
       if (!userDoc.exists) {
-        print("login gagal");
-
+        print("login gagal: data user tidak ditemukan di firestore");
         return null;
       }
 

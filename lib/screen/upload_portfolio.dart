@@ -511,10 +511,13 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               },
             );
 
-            // Upload gambar ke ImgBB
+            // Upload gambar ke ImgBB (dengan timeout 30 detik)
             print('Mulai upload gambar ke ImgBB...');
             String? uploadedUrl = await ImageUploadService.uploadImageToImgBB(
               selectedImage!,
+            ).timeout(
+              Duration(seconds: 30),
+              onTimeout: () => null, // kalau timeout, return null
             );
 
             if (uploadedUrl == null) {
@@ -523,17 +526,20 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
                 isDialogShowing = false;
               }
               if (mounted) {
-                ScaffoldMessenger.of(
-                  scaffoldContext,
-                ).showSnackBar(SnackBar(content: Text('Gagal upload gambar')));
+                ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                  SnackBar(content: Text('Gagal upload gambar. Periksa koneksi internet kamu.')),
+                );
               }
               return;
             }
             print(' Gambar berhasil diupload: $uploadedUrl');
 
-            // Ambil user yang sedang login
+            // Ambil user — pakai cachedUser dulu, baru fetch kalau null
             final authService = AuthService();
-            final currentUser = await authService.getCurrentUserData();
+            final currentUser = AuthService.cachedUser ?? await authService.getCurrentUserData().timeout(
+              Duration(seconds: 10),
+              onTimeout: () => null,
+            );
 
             if (currentUser == null) {
               if (isDialogShowing && mounted) {
@@ -551,8 +557,8 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               return;
             }
 
-            // Upload portfolio ke Firebase
-            await _portfolioService.uploadPortfolio(
+            // Upload portfolio ke Firestore (dengan timeout 15 detik)
+            final result = await _portfolioService.uploadPortfolio(
               imageUrl: uploadedUrl,
               title: _judulController.text,
               deskripsi: _deskripsiController.text,
@@ -562,9 +568,12 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
                   ? _linkController.text
                   : null,
               currentUser: currentUser,
+            ).timeout(
+              Duration(seconds: 15),
+              onTimeout: () => null,
             );
 
-            print(' Portfolio berhasil tersimpan!');
+            print(result != null ? ' Portfolio berhasil tersimpan!' : '⚠️ Firestore timeout, tapi gambar sudah terupload');
 
             if (isDialogShowing && mounted) {
               Navigator.of(scaffoldContext, rootNavigator: true).pop();
@@ -574,7 +583,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             if (mounted) {
               ScaffoldMessenger.of(scaffoldContext).showSnackBar(
                 SnackBar(
-                  content: Text(' Portfolio berhasil diupload!'),
+                  content: Text('Portfolio berhasil diupload!'),
                   backgroundColor: Colors.green,
                   duration: Duration(seconds: 2),
                 ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:portokita/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
@@ -110,25 +111,47 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
             child: ElevatedButton(
               onPressed: () async {
                 setState(() => _isloading = true);
-                final user = await auth.login(
-                  email: emailController.text.trim(),
-                  password: passwordController.text,
-                  rememberMe: _rememberMe
-                );
-                if (!mounted) return;
-                setState(() => _isloading = false);
-                if (user != null) {
-                  context.go('/home');
+                try {
+                  final user = await auth.login(
+                    email: emailController.text.trim(),
+                    password: passwordController.text,
+                    rememberMe: _rememberMe,
+                  ).timeout(const Duration(seconds: 15));
+
+                  if (!mounted) return;
+                  setState(() => _isloading = false);
+
+                  if (user != null) {
+                    context.go('/home');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Login Berhasil'),
+                        backgroundColor: Colors.greenAccent,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Email atau password salah. coba lagi"),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                } on TimeoutException {
+                  if (!mounted) return;
+                  setState(() => _isloading = false);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Login Berhasil'),
-                      backgroundColor: Colors.greenAccent,
+                      content: Text("Koneksi lambat. Silakan coba lagi atau cek internet kamu."),
+                      backgroundColor: Colors.orangeAccent,
                     ),
                   );
-                } else {
+                } catch (e) {
+                  if (!mounted) return;
+                  setState(() => _isloading = false);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Email atau password salah. coba lagi"),
+                    SnackBar(
+                      content: Text("Terjadi kesalahan: $e"),
                       backgroundColor: Colors.redAccent,
                     ),
                   );

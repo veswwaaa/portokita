@@ -232,29 +232,48 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                 child: ElevatedButton(
                   onPressed: () async {
                     setState(() => _isloading = true);
-                    final user = await auth.register(
-                      email: emailController.text.trim(),
-                      password: passwordController.text,
-                      username: usernameController.text.trim(),
-                      kategori: _selectJurusan,
-                    );
-                    if (!mounted) {
-                      return;
-                    }
-                    setState(() => _isloading = false);
+                    try {
+                      final user = await auth.register(
+                        email: emailController.text.trim(),
+                        password: passwordController.text,
+                        username: usernameController.text.trim(),
+                        kategori: _selectJurusan,
+                      ).timeout(const Duration(seconds: 20));
 
-                    if(user['success'] == true) {
-                      context.go('/splash');
+                      if (!mounted) return;
+                      setState(() => _isloading = false);
+
+                      if(user['success'] == true) {
+                        context.go('/splash');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Register Berhasil'),
+                            backgroundColor: Colors.greenAccent,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(user['message'] ?? 'Register Gagal'),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+                    } on TimeoutException {
+                      if (!mounted) return;
+                      setState(() => _isloading = false);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Register Berhasil'),
-                          backgroundColor: Colors.greenAccent,
+                          content: Text("Koneksi lambat. Silakan coba lagi atau cek internet kamu."),
+                          backgroundColor: Colors.orangeAccent,
                         ),
                       );
-                    } else {
+                    } catch (e) {
+                      if (!mounted) return;
+                      setState(() => _isloading = false);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(user['message'] ?? 'Register Gagal'),
+                          content: Text("Terjadi kesalahan: $e"),
                           backgroundColor: Colors.redAccent,
                         ),
                       );
