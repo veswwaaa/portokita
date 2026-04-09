@@ -24,10 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
             value,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          Text(
-            label,
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-          ),
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         ],
       ),
     );
@@ -72,12 +69,16 @@ class _ProfilePageState extends State<ProfilePage> {
               // Capture router SEBELUM async, supaya context tetap valid
               final router = GoRouter.of(context);
               Navigator.of(dialogContext).pop(); // tutup popup
-              await AuthService().logout();       // jalankan logout
-              router.go('/login');                // redirect ke login
+              await AuthService().logout(); // jalankan logout
+              router.go(
+                '/splash?skip=true',
+              ); // redirect ke splash (lewati animasi)
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: Text('Keluar', style: TextStyle(color: Colors.white)),
           ),
@@ -181,23 +182,47 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         // ── DATA USER DINAMIS ──
                         StreamBuilder<DocumentSnapshot>(
-                          stream: FirebaseService().usersCollection.doc(currentUserId).snapshots(),
+                          stream: FirebaseService().usersCollection
+                              .doc(currentUserId)
+                              .snapshots(),
                           builder: (context, userSnapshot) {
                             if (!userSnapshot.hasData) {
                               return Column(
                                 children: [
-                                  Text("Loading...", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900)),
-                                  Text("...", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
-                                  Text("...", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
+                                  Text(
+                                    "Loading...",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  Text(
+                                    "...",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                  Text(
+                                    "...",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
                                 ],
                               );
                             }
 
-                            final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
+                            final userData =
+                                userSnapshot.data!.data()
+                                    as Map<String, dynamic>?;
                             final username = userData?['username'] ?? 'No Name';
                             final email = userData?['email'] ?? '-';
                             final kategori = userData?['kategori'] ?? '-';
-                            final bio = userData?['bio'] ?? 'Passionate developer yang suka membuat aplikasi web dan mobile. Always learning, always coding! 🚀';
+                            final bio =
+                                userData?['bio'] ??
+                                'Passionate developer yang suka membuat aplikasi web dan mobile. Always learning, always coding! 🚀';
 
                             return Column(
                               children: [
@@ -229,11 +254,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                 // ── STATISTIK DINAMIS ──
                                 StreamBuilder<List<Portofolio>>(
-                                  stream: _portofolioService.getPortofoliosByUserId(currentUserId),
+                                  stream: _portofolioService
+                                      .getPortofoliosByUserId(currentUserId),
                                   builder: (context, portoSnapshot) {
-                                    if (portoSnapshot.connectionState == ConnectionState.waiting) {
+                                    if (portoSnapshot.connectionState ==
+                                        ConnectionState.waiting) {
                                       return Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           _statItem("...", "Portofolio"),
                                           _statItem("...", "Likes"),
@@ -256,11 +284,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                     }
 
                                     return Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        _statItem(totalPortos.toString(), "Portofolio"),
-                                        _statItem(totalLikes.toString(), "Likes"),
-                                        _statItem(totalViews.toString(), "Views"),
+                                        _statItem(
+                                          totalPortos.toString(),
+                                          "Portofolio",
+                                        ),
+                                        _statItem(
+                                          totalLikes.toString(),
+                                          "Likes",
+                                        ),
+                                        _statItem(
+                                          totalViews.toString(),
+                                          "Views",
+                                        ),
                                       ],
                                     );
                                   },
@@ -268,7 +306,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Divider(),
 
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10),
+                                  padding: const EdgeInsets.only(
+                                    left: 12.0,
+                                    right: 12.0,
+                                    top: 10,
+                                  ),
                                   child: Text(
                                     '"$bio"',
                                     style: TextStyle(
@@ -394,7 +436,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         right: 16,
                         // MediaQuery.of(context).padding.bottom = tinggi safe area bawah (notch/gesture bar)
                         // kBottomNavigationBarHeight = tinggi navbar (56dp standar Flutter)
-                        bottom: MediaQuery.of(context).padding.bottom + kBottomNavigationBarHeight + 16,
+                        bottom:
+                            MediaQuery.of(context).padding.bottom +
+                            kBottomNavigationBarHeight +
+                            16,
                       ),
                       child: Container(
                         decoration: BoxDecoration(
@@ -422,7 +467,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             Divider(height: 1),
                             GestureDetector(
                               onTap: _showLogoutDialog,
-                              child: _menuItem(Icons.logout, "Keluar", "", true),
+                              child: _menuItem(
+                                Icons.logout,
+                                "Keluar",
+                                "",
+                                true,
+                              ),
                             ),
                           ],
                         ),

@@ -31,13 +31,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadUserData() async {
     UserModel? user = await _authService.getCurrentUserData();
-    if(mounted) {
+    if (mounted) {
       setState(() {
         _username = user?.username ?? 'Guest';
       });
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -60,40 +59,40 @@ class _HomePageState extends State<HomePage> {
                   TabMenu(),
                   HomeText1(),
                   StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection('portofolios').snapshots() , 
-                    builder: (context, snapshot) { 
-
+                    stream: FirebaseFirestore.instance
+                        .collection('portofolios')
+                        .snapshots(),
+                    builder: (context, snapshot) {
                       //cek loading
-                      if(snapshot.connectionState == ConnectionState.waiting) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
-                      } 
+                      }
 
                       //cek jika error
-                      if(snapshot.hasError) {
-                        return  Center(child: Text("error : ${snapshot.error}"));
-                      } 
+                      if (snapshot.hasError) {
+                        return Center(child: Text("error : ${snapshot.error}"));
+                      }
 
                       //cek jika data kosong
-                      if(!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(child: Text("belum ada portofolio"));
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(
+                          child: Text("belum ada portofolio"),
+                        );
                       }
 
                       //jika aman baru ambil data
                       final dataPorto = snapshot.data!.docs;
 
-
                       return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: dataPorto.length,
-                      itemBuilder: (context , index){
-                        return PortofolioCard(
-                          data: dataPorto[index]
-                        );
-                      },
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: dataPorto.length,
+                        itemBuilder: (context, index) {
+                          return PortofolioCard(data: dataPorto[index]);
+                        },
                       );
-                    }
-                  )
+                    },
+                  ),
                 ],
               ),
             ),
@@ -203,12 +202,12 @@ class _HomePageState extends State<HomePage> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    _selectedTabIndex = index;      
+                    _selectedTabIndex = index;
                   });
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(   
-                    horizontal: 20.0,   
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.0,
                     vertical: 10.0,
                   ),
                   decoration: BoxDecoration(

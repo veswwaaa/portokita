@@ -9,10 +9,11 @@ import '../screen/profilepage.dart';
 // import '../screen/splash_screen.dart';
 import '../screen/splash_screen1.dart';
 import '../screen/register_screen.dart';
-import '../screen/login_screen.dart';
+import '../component/login_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellNavigatorKey =GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -22,17 +23,15 @@ class AppRouter {
       GoRoute(
         path: '/splash',
         name: 'splash',
-        builder: (context, state) => const SplashScreen(),
-      ),
-      GoRoute(
-        path: '/login',
-        name: 'login',
-        builder: (context, state) => const LoginFormContainer(),
+        builder: (context, state) {
+          final skip = state.uri.queryParameters['skip'] == 'true';
+          return SplashScreen(showImmediately: skip);
+        },
       ),
       GoRoute(
         path: '/register',
         name: 'register',
-        builder: (context, state) => const RegisterFormContainer() ,
+        builder: (context, state) => const RegisterFormContainer(),
       ),
       // Shell Route dengan Bottom Navigation
       ShellRoute(

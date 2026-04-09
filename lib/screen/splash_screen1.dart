@@ -7,7 +7,7 @@ import 'package:portokita/screen/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
-import '../screen/login_screen.dart';
+import '../component/login_screen.dart';
 import '../services/auth_service.dart';
 
 void main() {
@@ -28,7 +28,8 @@ class PortoKitaApp extends StatelessWidget {
 }
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final bool showImmediately;
+  const SplashScreen({super.key, this.showImmediately = false});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -95,23 +96,30 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _runAnimations() async {
+    if (widget.showImmediately) {
+      _slideController.value = 1.0;
+      _upController.value = 1.0;
+      setState(() {
+        _isWhite = true;
+      });
+      return;
+    }
 
-    SharedPreferences prefs = await 
-    SharedPreferences.getInstance();
-      bool rememberMe = prefs.getBool('remember_me') ?? false;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool rememberMe = prefs.getBool('remember_me') ?? false;
 
-      User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
-      bool isLoggedIn = (user != null && rememberMe);
+    bool isLoggedIn = (user != null && rememberMe);
 
-      if(user != null && !rememberMe) { 
-        await FirebaseAuth.instance.signOut();
-      }
+    if (user != null && !rememberMe) {
+      await FirebaseAuth.instance.signOut();
+    }
 
-      // pre fetch user data
-      if (isLoggedIn) {
-        AuthService().getCurrentUserData();
-      }
+    // pre fetch user data
+    if (isLoggedIn) {
+      AuthService().getCurrentUserData();
+    }
 
     // Tunggu sebentar sebelum mulai
     await Future.delayed(const Duration(milliseconds: 500));
@@ -144,11 +152,11 @@ class _SplashScreenState extends State<SplashScreen>
     // Tunggu sebentar sesusah geser
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if(isLoggedIn && mounted) {
+    if (isLoggedIn && mounted) {
       context.go('/home');
-    }else {
-    // 3. Geser ke Atas dan Tampilkan Form!
-      if  (mounted) {
+    } else {
+      // 3. Geser ke Atas dan Tampilkan Form!
+      if (mounted) {
         _upController.forward();
       }
     }

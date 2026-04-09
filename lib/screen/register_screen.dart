@@ -30,7 +30,6 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
   void initState() {
     super.initState();
 
-
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -76,19 +75,15 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: AnimatedBuilder(
-        animation: Listenable.merge([
-          _slideController,
-          _upController,
-        ]),
+        animation: Listenable.merge([_slideController, _upController]),
         builder: (context, child) {
           final fadeValue = _slideController.value.clamp(0.0, 1.0);
-
 
           final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
           final screenHeight = MediaQuery.of(context).size.height;
 
           final formOffset = (1.0 - _upAnimation.value) * screenHeight;
-          final logoUpOffset = formOffset - (screenHeight * 0.35); 
+          final logoUpOffset = formOffset - (screenHeight * 0.35);
           return SizedBox.expand(
             child: Stack(
               alignment: Alignment.center,
@@ -233,17 +228,19 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                   onPressed: () async {
                     setState(() => _isloading = true);
                     try {
-                      final user = await auth.register(
-                        email: emailController.text.trim(),
-                        password: passwordController.text,
-                        username: usernameController.text.trim(),
-                        kategori: _selectJurusan,
-                      ).timeout(const Duration(seconds: 20));
+                      final user = await auth
+                          .register(
+                            email: emailController.text.trim(),
+                            password: passwordController.text,
+                            username: usernameController.text.trim(),
+                            kategori: _selectJurusan,
+                          )
+                          .timeout(const Duration(seconds: 20));
 
                       if (!mounted) return;
                       setState(() => _isloading = false);
 
-                      if(user['success'] == true) {
+                      if (user['success'] == true) {
                         context.go('/splash');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -264,7 +261,9 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                       setState(() => _isloading = false);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Koneksi lambat. Silakan coba lagi atau cek internet kamu."),
+                          content: Text(
+                            "Koneksi lambat. Silakan coba lagi atau cek internet kamu.",
+                          ),
                           backgroundColor: Colors.orangeAccent,
                         ),
                       );
@@ -315,7 +314,7 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                   ),
                   TextButton(
                     onPressed: () {
-                      context.go('/splash');
+                      context.go('/splash?skip=true');
                     },
                     child: const Text(
                       'Masuk',
@@ -407,9 +406,8 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
             "Animasi",
           ].map((String category) {
             return DropdownMenuItem<String>(
-
               value: category,
-              child: Text(category,overflow: TextOverflow.ellipsis,),
+              child: Text(category, overflow: TextOverflow.ellipsis),
             );
           }).toList(),
       onChanged: (String? newValue) {
