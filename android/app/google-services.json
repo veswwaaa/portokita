@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1079831312834:android:1279d3c9d43581d180fe5b",
+        "mobilesdk_app_id": "1:1079831312834:android:a4acbe3e8a4bbafb80fe5b",
         "android_client_info": {
-          "package_name": "com.example.portokita"
+          "package_name": "com.example.ajimashudi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1079831312834-qlag5mmojbk6utge84867t1a67u8fn4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAanEP4EuTWMza6RvpOOaJDY97czWmej9E"
@@ -20,7 +25,63 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079831312834-qlag5mmojbk6utge84867t1a67u8fn4o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1079831312834-6i5g4tmmcs9q676qbpvrpjvvu2uafmdj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ajimashudi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079831312834:android:1279d3c9d43581d180fe5b",
+        "android_client_info": {
+          "package_name": "com.example.portokita"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079831312834-bk70e2f54g98k2l5acn6ga1qo1eomdeh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.portokita",
+            "certificate_hash": "1c39752c29ded763c7a9ca97e1ac08b88c2dd682"
+          }
+        },
+        {
+          "client_id": "1079831312834-qlag5mmojbk6utge84867t1a67u8fn4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAanEP4EuTWMza6RvpOOaJDY97czWmej9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079831312834-qlag5mmojbk6utge84867t1a67u8fn4o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1079831312834-6i5g4tmmcs9q676qbpvrpjvvu2uafmdj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ajimashudi"
+              }
+            }
+          ]
         }
       }
     }

@@ -10,6 +10,7 @@ import '../screen/profilepage.dart';
 import '../screen/splash_screen1.dart';
 import '../screen/register_screen.dart';
 import '../component/login_screen.dart';
+import '../screen/lupa_password_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -32,6 +33,11 @@ class AppRouter {
         path: '/register',
         name: 'register',
         builder: (context, state) => const RegisterFormContainer(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        name: 'forgot-password',
+        builder: (context, state) => const LupaPasswordScreen(),
       ),
       // Shell Route dengan Bottom Navigation
       ShellRoute(

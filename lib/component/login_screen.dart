@@ -89,7 +89,9 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                 ),
 
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push('/forgot-password');
+                  },
                   child: const Text(
                     "Lupa Password?",
                     style: TextStyle(color: Color(0xFF4DB6AC)),
