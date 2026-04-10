@@ -198,7 +198,7 @@ class AuthService {
   bool isLoggedIn() {
     return _firebaseService.currentUser != null;
   }
-  //fungsi reset password
+  //fungsi buat ngirim request reset password
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _firebaseService.auth
