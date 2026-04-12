@@ -8,9 +8,7 @@ Scaffold(
                 topLeft: Radius.circular(120),
                 topRight: Radius.circular(50),
               ),
-
-           
-            // hello world
+              
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
