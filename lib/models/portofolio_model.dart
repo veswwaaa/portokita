@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 class Portofolio {
   //properties (data yang disimpan)
@@ -26,9 +26,6 @@ class Portofolio {
   final DateTime createdAt; 
   final DateTime updatedAt; 
 
-  /// Constructor = function untuk membuat object portofolio baru
-  /// required = wajib di isi
-  /// optional (ada tanda ?) artinya null atau boleh kosong
 
   Portofolio({
     required this.id,
