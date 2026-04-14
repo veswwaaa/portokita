@@ -5,7 +5,7 @@ class UserModel {
   final String? avatarUrl;
   final String? bio;
   final String? kategori;
-   
+  
   final List<String> myPortofolios; // id portofolio yang di upload user
   final List<String> likedPortofolios; // id portofolio yang di like user
 
