@@ -162,7 +162,7 @@ class AuthService {
     }
   }
 
-  //mengambil data user yang sedang login dari firebase
+  //ngambil data user yang sedang login dari firebase
   Future<UserModel?> getCurrentUserData() async {
     try {
       if (cachedUser != null) {
