@@ -16,6 +16,12 @@ class PortofolioCard extends StatefulWidget {
 class _CardPortofolioState extends State<PortofolioCard> {
   final PortofolioService _portofolioService = PortofolioService();
   final FirebaseService _firebaseService = FirebaseService();
+  String _getMonthName(int month) {
+    const months = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus","September", "Oktober","November","Desember"
+    ];
+    return months[month - 1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +103,14 @@ class _CardPortofolioState extends State<PortofolioCard> {
                           width: 80,
                           height: 35,
                           decoration: BoxDecoration(
-                            gradient:LinearGradient( colors: [
-                              Color(0xFFEE7F3C),
-                              Color(0xFFF49B33)
-                              ],
+                            gradient: LinearGradient(
+                              colors: [Color(0xFFEE7F3C), Color(0xFFF49B33)],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             ),
-                            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50.0),
+                            ),
                           ),
                           child: Text(
                             porto.kategori, // Misalnya menampilkan kategori
@@ -177,7 +183,7 @@ class _CardPortofolioState extends State<PortofolioCard> {
                             isLiked ? Icons.favorite : Icons.favorite_border,
                             size: 20,
                             color: isLiked ? Colors.red : Colors.black,
-                          ),      
+                          ),
                         ),
                         SizedBox(width: 5),
                         Text(porto.likes.toString()),
@@ -203,6 +209,11 @@ class _CardPortofolioState extends State<PortofolioCard> {
   }
 
   Widget _buildDetailPopUp(BuildContext context, Portofolio porto) {
+    Map<String, dynamic> docData = widget.data.data() as Map<String, dynamic>;
+    Portofolio porto = Portofolio.fromFirestore(docData, widget.data.id);
+    String? currentUserId = _firebaseService.currentUserId;
+    bool isLiked =
+        currentUserId != null && porto.likedBy.contains(currentUserId);
     return Container(
       height: MediaQuery.of(context).size.height * 0.90,
       decoration: const BoxDecoration(
@@ -277,6 +288,72 @@ class _CardPortofolioState extends State<PortofolioCard> {
 
                 const SizedBox(height: 10),
                 const Divider(),
+                SizedBox(height: 15,),
+                Padding(
+                  padding: EdgeInsetsGeometry.only(left: 5.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          if (currentUserId != null) {
+                            await _portofolioService.toggleLike(
+                              porto,
+                              currentUserId,
+                            );
+                          }
+                        },
+                        child: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          size: 20,
+                          color: isLiked ? Colors.red : Colors.black,
+                        ),
+                      ),
+                      Text(porto.likes.toString()),
+                      SizedBox(width: 20,),
+                      Icon(Icons.chat_bubble_outline, size: 20),
+                      const Spacer(),
+
+                      Text(
+                        "${porto.createdAt.day} ${_getMonthName(porto.createdAt.month)} ${porto.createdAt.year}", style: TextStyle(color: Colors.black,fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15.0 ,),
+                const Divider(),
+                //deskripsi section
+                SizedBox(height: 10),
+                Text("Deskripsi", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+                Text(porto.deskripsi,style: TextStyle(fontSize: 13),),
+                SizedBox(height: 10,),
+                //tags
+                Text("Tags",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                SizedBox(
+                  height: 20,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: porto.tags.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6 ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "#${porto.tags[index]}",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                ),
+
 
                 // Comments Section Placeholder
                 const SizedBox(height: 10),

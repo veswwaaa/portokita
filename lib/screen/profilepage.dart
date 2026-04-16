@@ -126,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
 
-            // ── Card profil (gradient) ──
+            // Card profil 
             Align(
               alignment: Alignment(0.0, -0.7),
               child: Stack(
@@ -180,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                        // ── DATA USER DINAMIS ──
+                        //data user
                         StreamBuilder<DocumentSnapshot>(
                           stream: FirebaseService().usersCollection
                               .doc(currentUserId)
