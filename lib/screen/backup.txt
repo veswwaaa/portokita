@@ -10,7 +10,6 @@ Scaffold(
               ),
             
 
-            //card
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
