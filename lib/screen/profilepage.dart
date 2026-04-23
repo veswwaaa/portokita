@@ -370,8 +370,24 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => AllPortofolioPage(),
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) =>
+                                    const AllPortofolioPage(),
+                                transitionDuration: const Duration(milliseconds: 400),
+                                reverseTransitionDuration: const Duration(milliseconds: 300),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  final curvedAnimation = CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutCubic,
+                                  );
+                                  return SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: const Offset(0, 1), // dari bawah
+                                      end: Offset.zero,           // ke posisi normal
+                                    ).animate(curvedAnimation),
+                                    child: child,
+                                  );
+                                },
                               ),
                             );
                           },

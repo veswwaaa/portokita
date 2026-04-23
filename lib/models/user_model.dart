@@ -26,7 +26,7 @@ class UserModel {
     this.bio,
     this.kategori,
     this.myPortofolios = const [],
-    this.likedPortofolios = const [],   // Ini untuk riwayat like user!
+    this.likedPortofolios = const [],
     this.totalLikes = 0,
     this.totalViews = 0,
     required this.createdAt,
