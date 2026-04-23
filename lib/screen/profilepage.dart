@@ -5,6 +5,7 @@ import '../models/portofolio_model.dart';
 import '../services/auth_service.dart';
 import '../services/firebase_service.dart';
 import '../services/portofolio_service.dart';
+import 'all_portofolio_page_profile.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -126,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
 
-            // Card profil 
+            // Card profil
             Align(
               alignment: Alignment(0.0, -0.7),
               child: Stack(
@@ -365,11 +366,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                        Text(
-                          "Lihat semua",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.w500,
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AllPortofolioPage(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Lihat semua",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ],
@@ -487,4 +498,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+
+
 }

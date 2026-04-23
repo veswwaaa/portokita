@@ -27,7 +27,7 @@ class ImageUploadService {
 
       final response = await imgbb.uploadImageFile(
         imageFile: File(imageFile.path),
-        expiration: 999999,
+        // expiration: 999999,
       );
 
       if (response != null && response.url != null) {
