@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_service.dart';
 import '../models/user_model.dart';
+import 'app_state_service.dart';
 
 class AuthService {
   static UserModel? cachedUser;
@@ -25,11 +26,7 @@ class AuthService {
       User? firebaseUser = userCredential.user;
 
       if (firebaseUser == null) {
-        return {
-          'success': false,
-          'user': null,
-          'message': 'Register gagal',
-        };
+        return {'success': false, 'user': null, 'message': 'Register gagal'};
       }
 
       // buat data user untuk disimpan firestore
@@ -48,11 +45,7 @@ class AuthService {
           .set(newUser.toFirestore())
           .timeout(const Duration(seconds: 10));
 
-      return {
-        'success': true,
-        'user': newUser,
-        'message': 'Register berhasil',
-      };
+      return {'success': true, 'user': newUser, 'message': 'Register berhasil'};
 
       //handler error firebase untuk notif di UI
     } on FirebaseAuthException catch (e) {
@@ -156,6 +149,9 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('remember_me', false);
 
+      // Clear saved route saat logout
+      await AppStateService.clearLastRoute();
+
       await _firebaseService.auth.signOut();
     } catch (e) {
       print('eror logou: $e');
@@ -175,8 +171,9 @@ class AuthService {
         return null;
       }
 
-      DocumentSnapshot userDoc =
-          await _firebaseService.usersCollection.doc(userId).get();
+      DocumentSnapshot userDoc = await _firebaseService.usersCollection
+          .doc(userId)
+          .get();
 
       if (!userDoc.exists) {
         return null;
@@ -198,6 +195,7 @@ class AuthService {
   bool isLoggedIn() {
     return _firebaseService.currentUser != null;
   }
+
   //fungsi buat ngirim request reset password
   Future<void> sendPasswordResetEmail(String email) async {
     try {

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import '../component/login_screen.dart';
 import '../services/auth_service.dart';
+import '../services/app_state_service.dart';
 
 void main() {
   runApp(const PortoKitaApp());
@@ -153,6 +154,8 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 200));
 
     if (isLoggedIn && mounted) {
+      // Simpan route sebelum navigasi
+      await AppStateService.saveLastRoute('/home');
       context.go('/home');
     } else {
       // 3. Geser ke Atas dan Tampilkan Form!

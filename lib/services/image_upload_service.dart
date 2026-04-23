@@ -14,7 +14,7 @@ class ImageUploadService {
   }
 
 
-  //untuk upload gambar ke imgBB dan dapat urlnya
+  //untuk upload img nya ke imagebb trus dapatin url image nya
 
   static Future<String?> uploadImageToImgBB(XFile imageFile) async {
     try{

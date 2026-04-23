@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/app_state_service.dart';
+
 class MainNavigation extends StatefulWidget {
   final Widget child;
 
@@ -19,15 +21,19 @@ class _MainNavigationState extends State<MainNavigation> {
 
     switch (index) {
       case 0:
+        AppStateService.saveLastRoute('/home');
         context.go('/home');
         break;
       case 1:
+        AppStateService.saveLastRoute('/search');
         context.go('/search');
         break;
       case 2:
+        AppStateService.saveLastRoute('/upload');
         context.go('/upload');
         break;
       case 3:
+        AppStateService.saveLastRoute('/profile');
         context.go('/profile');
         break;
     }

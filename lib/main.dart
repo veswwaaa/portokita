@@ -1,23 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';  // Import Firebase
-import 'firebase_options.dart';  
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase
+import 'firebase_options.dart';
 import 'routes/app_router.dart';
+import 'services/app_state_service.dart';
+import 'services/app_lifecycle_observer.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   //inisialisasi firebasenya
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
+  // Tentukan initial route berdasarkan saved state
+  final lastRoute = await AppStateService.getLastRoute();
+  final isFirstLaunch = await AppStateService.isFirstLaunch();
+
+  final initialRoute = (isFirstLaunch || lastRoute == null)
+      ? '/splash'
+      : lastRoute;
+
+  AppRouter.setInitialLocation(initialRoute);
+
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  final String initialRoute;
+
+  const MyApp({super.key, this.initialRoute = '/splash'});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late AppLifecycleObserver _lifecycleObserver;
+
+  @override
+  void initState() {
+    super.initState();
+    // Register lifecycle observer
+    _lifecycleObserver = AppLifecycleObserver(router: AppRouter.router);
+    WidgetsBinding.instance.addObserver(_lifecycleObserver);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(_lifecycleObserver);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +76,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-          
+
   void _incrementCounter() {
     setState(() {
       _counter++;
