@@ -5,9 +5,13 @@ class UserModel {
   final String? avatarUrl;
   final String? bio;
   final String? kategori;
+  final String? phoneNumber;
+  final String? lokasi;
+  final String? kelas;
   
   final List<String> myPortofolios; // id portofolio yang di upload user
-  final List<String> likedPortofolios; // id portofolio yang di like user
+  final List<String> likedPortfolios; // id portofolio yang di like user
+  final List<String> savedPortfolios; // id portofolio yang di save user
 
   //statistik
   final int totalLikes;
@@ -25,8 +29,12 @@ class UserModel {
     this.avatarUrl,
     this.bio,
     this.kategori,
+    this.phoneNumber,
+    this.lokasi,
+    this.kelas,
     this.myPortofolios = const [],
-    this.likedPortofolios = const [],
+    this.likedPortfolios = const [],
+    this.savedPortfolios = const [],
     this.totalLikes = 0,
     this.totalViews = 0,
     required this.createdAt,
@@ -41,8 +49,12 @@ class UserModel {
       avatarUrl: data['avatarUrl'],
       bio: data['bio'],
       kategori: data['kategori'],
+      phoneNumber: data['phoneNumber'],
+      lokasi: data['lokasi'],
+      kelas: data['kelas'],
       myPortofolios: List<String>.from(data['myPortfolios'] ?? []),
-      likedPortofolios: List<String>.from(data['likedPortfolios'] ?? []),
+      likedPortfolios: List<String>.from(data['likedPortfolios'] ?? []),
+      savedPortfolios: List<String>.from(data['savedPortfolios'] ?? []),
       totalLikes: data['totalLikes'] ?? 0,
       totalViews: data['totalViews'] ?? 0,
       createdAt: data['createdAt']?.toDate() ?? DateTime.now(),
@@ -58,8 +70,12 @@ class UserModel {
       'avatarUrl': avatarUrl,
       'bio': bio,
       'kategori': kategori,
+      'phoneNumber': phoneNumber,
+      'lokasi': lokasi,
+      'kelas': kelas,
       'myPortfolios': myPortofolios,
-      'likedPortfolios': likedPortofolios,
+      'likedPortfolios': likedPortfolios,
+      'savedPortfolios': savedPortfolios,
       'totalLikes': totalLikes,
       'totalViews': totalViews,
       'createdAt': createdAt,
@@ -74,8 +90,12 @@ class UserModel {
     String? avatarUrl,
     String? bio,
     String? kategori,
+    String? phoneNumber,
+    String? lokasi,
+    String? kelas,
     List<String>? myPortfolios,
     List<String>? likedPortfolios,
+    List<String>? savedPortfolios,
     int? totalLikes,
     int? totalViews,
     DateTime? updatedAt,
@@ -87,8 +107,12 @@ class UserModel {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       bio: bio ?? this.bio,
       kategori: kategori ?? this.kategori,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      lokasi: lokasi ?? this.lokasi,
+      kelas: kelas ?? this.kelas,
       myPortofolios: myPortfolios ?? this.myPortofolios,
-      likedPortofolios: likedPortfolios ?? this.likedPortofolios,
+      likedPortfolios: likedPortfolios ?? this.likedPortfolios,
+      savedPortfolios: savedPortfolios ?? this.savedPortfolios,
       totalLikes: totalLikes ?? this.totalLikes,
       totalViews: totalViews ?? this.totalViews,
       createdAt: this.createdAt,

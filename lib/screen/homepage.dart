@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
 
   Container Header() {
     return Container(
-      height: 250.0,
+      height: 200.0,
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 85.9, right: 25.0),
+            padding: const EdgeInsets.only(left: 25.0, top: 75.0, right: 25.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                   'Selamat Datang ',
                   style: GoogleFonts.plusJakartaSans(
                     color: Color(0xFFFFFFFF),
-                    fontSize: 14.0,
+                    fontSize: 16.0,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -135,35 +135,7 @@ class _HomePageState extends State<HomePage> {
                     style: GoogleFonts.plusJakartaSans(
                       color: Color(0xFFFFFFFF),
                       fontWeight: FontWeight.w800,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0),
-                  child: SizedBox(
-                    width: 1000,
-                    height: 40,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        hintText: 'Cari di sini...',
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintStyle: TextStyle(height: 1.2),
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10.0),
-                          ), // Set ke 0 untuk kotak sempurna
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.blue, width: 2),
-                        ),
-                      ),
+                      fontSize: 28.0,
                     ),
                   ),
                 ),
@@ -173,15 +145,15 @@ class _HomePageState extends State<HomePage> {
 
           Positioned(
             right: 30.0,
-            top: 110.0,
+            top: 85.0,
             child: Container(
-              width: 30.0,
-              height: 30.0,
+              width: 35.0,
+              height: 35.0,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(0xFFD9D9D9),
               ),
-              child: Icon(Icons.notifications),
+              child: Icon(Icons.notifications, size: 20),
             ),
           ),
         ],
@@ -256,17 +228,6 @@ class HomeText1 extends StatelessWidget {
             child: Text(
               "portofolio Terbaru",
               style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.0),
-            ),
-          ),
-          Spacer(),
-          Container(
-            child: Text(
-              "Lihat Semua",
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 15.0,
-                color: Colors.blue,
-              ),
             ),
           ),
         ],

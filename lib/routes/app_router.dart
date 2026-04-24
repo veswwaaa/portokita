@@ -11,7 +11,11 @@ import '../screen/splash_screen1.dart';
 import '../screen/register_screen.dart';
 import '../component/login_screen.dart';
 import '../screen/lupa_password_screen.dart';
+import '../screen/edit_profile_page.dart';
+import '../screen/saved_portofolio_page.dart';
+import '../screen/liked_portofolio_page.dart';
 import '../services/app_state_service.dart';
+import '../models/user_model.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -78,7 +82,6 @@ class AppRouter {
                 NoTransitionPage(child: UploadPortfolio()),
           ),
 
-          // Profile Route
           GoRoute(
             path: '/profile',
             name: 'profile',
@@ -86,6 +89,24 @@ class AppRouter {
                 NoTransitionPage(child: ProfilePage()),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/edit-profile',
+        name: 'edit-profile',
+        builder: (context, state) {
+          final user = state.extra as UserModel;
+          return EditProfilePage(user: user);
+        },
+      ),
+      GoRoute(
+        path: '/saved-portfolios',
+        name: 'saved-portfolios',
+        builder: (context, state) => const SavedPortofolioPage(),
+      ),
+      GoRoute(
+        path: '/liked-portfolios',
+        name: 'liked-portfolios',
+        builder: (context, state) => const LikedPortofolioPage(),
       ),
     ],
     observers: [_RouteObserver()],

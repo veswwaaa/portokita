@@ -200,7 +200,7 @@ class PortofolioService {
       });
 
       await _firebaseService.usersCollection.doc(userId).update({
-        'likedPortofolios': FieldValue.arrayRemove([portofolioId]),
+        'likedPortfolios': FieldValue.arrayRemove([portofolioId]),
       });
 
       return true;
@@ -257,5 +257,34 @@ class PortofolioService {
     } catch (e) {
       print('Error increment views: $e');
     }
+  }
+
+  // Save/Bookmark methods
+  Future<bool> savePortfolio(String portfolioId, String userId) async {
+    try {
+      await _firebaseService.usersCollection.doc(userId).update({
+        'savedPortfolios': FieldValue.arrayUnion([portfolioId]),
+      });
+      return true;
+    } catch (e) {
+      print('Error save portfolio: $e');
+      return false;
+    }
+  }
+
+  Future<bool> unsavePortfolio(String portfolioId, String userId) async {
+    try {
+      await _firebaseService.usersCollection.doc(userId).update({
+        'savedPortfolios': FieldValue.arrayRemove([portfolioId]),
+      });
+      return true;
+    } catch (e) {
+      print('Error unsave portfolio: $e');
+      return false;
+    }
+  }
+
+  Future<List<Portofolio>> getSavedPortfolios(List<String> portofolioIds) async {
+    return getLikedPortfolios(portofolioIds); // Reuse logic
   }
 }

@@ -207,4 +207,19 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Update user profile
+  Future<bool> updateUserProfile(UserModel updatedUser) async {
+    try {
+      await _firebaseService.usersCollection
+          .doc(updatedUser.id)
+          .update(updatedUser.toFirestore());
+      
+      cachedUser = updatedUser;
+      return true;
+    } catch (e) {
+      print('Error updating user profile: $e');
+      return false;
+    }
+  }
 }

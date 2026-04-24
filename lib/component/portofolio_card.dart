@@ -3,11 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/portofolio_service.dart';
 import '../services/firebase_service.dart';
 import '../models/portofolio_model.dart';
+import '../screen/portfolio_detail_page.dart';
 
 class PortofolioCard extends StatefulWidget {
-  final QueryDocumentSnapshot data;
+  final DocumentSnapshot data;
+  final bool showOtherPortfolios;
 
-  const PortofolioCard({super.key, required this.data});
+  const PortofolioCard({
+    super.key,
+    required this.data,
+    this.showOtherPortfolios = true,
+  });
 
   @override
   State<PortofolioCard> createState() => _CardPortofolioState();
@@ -36,13 +42,30 @@ class _CardPortofolioState extends State<PortofolioCard> {
         // Increment view count when opening detail
         _portofolioService.incrementViews(porto.id);
 
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) {
-            return _buildDetailPopUp(context, porto);
-          },
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            opaque: false,
+            barrierColor: Colors.black.withOpacity(0.5),
+            fullscreenDialog: true,
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PortfolioDetailPage(
+              portfolio: porto,
+              showOtherPortfolios: widget.showOtherPortfolios,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.easeOutCubic;
+
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          ),
         );
       },
       child: Column(
@@ -208,166 +231,4 @@ class _CardPortofolioState extends State<PortofolioCard> {
     );
   }
 
-  Widget _buildDetailPopUp(BuildContext context, Portofolio porto) {
-    Map<String, dynamic> docData = widget.data.data() as Map<String, dynamic>;
-    Portofolio porto = Portofolio.fromFirestore(docData, widget.data.id);
-    String? currentUserId = _firebaseService.currentUserId;
-    bool isLiked =
-        currentUserId != null && porto.likedBy.contains(currentUserId);
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.90,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-      ),
-
-      child: ListView(
-        padding: const EdgeInsets.only(bottom: 20),
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-            child: porto.imageUrl.isNotEmpty
-                ? Image.network(
-                    porto.imageUrl,
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: double.infinity,
-                        height: 250,
-                        color: Colors.grey[300],
-                        child: Icon(
-                          Icons.broken_image,
-                          size: 50,
-                          color: Colors.grey[600],
-                        ),
-                      );
-                    },
-                  )
-                : Container(
-                    height: 250,
-                    width: double.infinity,
-                    color: Colors.grey[300],
-                    child: Center(
-                      child: Icon(
-                        Icons.broken_image,
-                        size: 50,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  porto.title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    const Icon(Icons.person),
-                    const SizedBox(width: 15),
-                    Text(porto.username),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-                const Divider(),
-                SizedBox(height: 15,),
-                Padding(
-                  padding: EdgeInsetsGeometry.only(left: 5.0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          if (currentUserId != null) {
-                            await _portofolioService.toggleLike(
-                              porto,
-                              currentUserId,
-                            );
-                          }
-                        },
-                        child: Icon(
-                          isLiked ? Icons.favorite : Icons.favorite_border,
-                          size: 20,
-                          color: isLiked ? Colors.red : Colors.black,
-                        ),
-                      ),
-                      Text(porto.likes.toString()),
-                      SizedBox(width: 20,),
-                      Icon(Icons.chat_bubble_outline, size: 20),
-                      const Spacer(),
-
-                      Text(
-                        "${porto.createdAt.day} ${_getMonthName(porto.createdAt.month)} ${porto.createdAt.year}", style: TextStyle(color: Colors.black,fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15.0 ,),
-                const Divider(),
-                //deskripsi section
-                SizedBox(height: 10),
-                Text("Deskripsi", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                SizedBox(height: 10,),
-                Text(porto.deskripsi,style: TextStyle(fontSize: 13),),
-                SizedBox(height: 10,),
-                //tags
-                Text("Tags",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                SizedBox(
-                  height: 20,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: porto.tags.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6 ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          "#${porto.tags[index]}",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                          ),
-                        ),
-                      );
-                    }
-                  ),
-                ),
-
-
-                // Comments Section Placeholder
-                const SizedBox(height: 10),
-                const Text(
-                  'Komentar',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Center(child: Text('Belum ada komentar.')),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

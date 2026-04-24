@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import '../models/portofolio_model.dart';
+import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../services/firebase_service.dart';
 import '../services/portofolio_service.dart';
 import 'all_portofolio_page_profile.dart';
+import 'portfolio_detail_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -95,168 +97,168 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Color(0xFFEE7F3C),
       body: SafeArea(
-        child: Stack(
-          children: [
-            // ── Judul "Profile" ──
-            Positioned(
-              top: 16,
-              left: 40,
-              child: Text(
-                "Profile",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
-            // ── Background putih bawah ──
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: double.infinity,
-                height: 500.0,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              // ── Background putih bawah (dinamis mengikut scroll) ──
+              Positioned(
+                top: 260, // Memotong di tengah area kartu profil
+                left: 0,
+                right: 0,
+                bottom: -2000, // Menutup hingga jauh ke bawah
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50),
+                      topRight: Radius.circular(50),
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            // Card profil
-            Align(
-              alignment: Alignment(0.0, -0.7),
-              child: Stack(
+              Column(
                 children: [
-                  Container(
-                    width: 330,
-                    height: 270,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0x66F49B33), Color(0x66FFFFFF)],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
+                  // ── Judul "Profile" ──
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 40),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Profile",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
 
-                  Positioned(
-                    left: 0,
-                    top: 5,
-                    right: 0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                size: 40,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Positioned(
-                              left: 40,
-                              bottom: 0,
-                              child: Container(
-                                padding: EdgeInsets.all(4),
-                                child: Icon(
-                                  Icons.edit,
-                                  size: 15,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
+                  const SizedBox(height: 20),
+
+                  // ── Card profil ──
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        width: 330,
+                        height: 320,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0x66F49B33), Color(0x66FFFFFF)],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                        //data user
-                        StreamBuilder<DocumentSnapshot>(
-                          stream: FirebaseService().usersCollection
+                      ),
+                      Positioned(
+                        left: 0,
+                        top: 5,
+                        right: 0,
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseService()
+                              .usersCollection
                               .doc(currentUserId)
                               .snapshots(),
                           builder: (context, userSnapshot) {
                             if (!userSnapshot.hasData) {
-                              return Column(
-                                children: [
-                                  Text(
-                                    "Loading...",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  Text(
-                                    "...",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  Text(
-                                    "...",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
+                              return const Center(
+                                child: CircularProgressIndicator(),
                               );
                             }
 
                             final userData =
                                 userSnapshot.data!.data()
                                     as Map<String, dynamic>?;
-                            final username = userData?['username'] ?? 'No Name';
-                            final email = userData?['email'] ?? '-';
-                            final kategori = userData?['kategori'] ?? '-';
-                            final bio =
-                                userData?['bio'] ??
-                                'Passionate developer yang suka membuat aplikasi web dan mobile. Always learning, always coding! 🚀';
+                            final userModel = UserModel.fromFirestore(
+                              userData ?? {},
+                              userSnapshot.data!.id,
+                            );
 
                             return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: userModel.avatarUrl !=
+                                              null
+                                          ? NetworkImage(userModel.avatarUrl!)
+                                          : const AssetImage(
+                                                'assets/images/foto.jpeg',
+                                              )
+                                              as ImageProvider,
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        height: 28,
+                                        width: 28,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: IconButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            context.push(
+                                              '/edit-profile',
+                                              extra: userModel,
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            size: 14.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                // Data User
                                 Text(
-                                  username,
-                                  style: TextStyle(
+                                  userModel.username,
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w900,
                                     color: Colors.black,
                                   ),
                                 ),
                                 Text(
-                                  kategori,
-                                  style: TextStyle(
+                                  userModel.kategori ?? '-',
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w300,
                                     color: Colors.black,
                                   ),
                                 ),
                                 Text(
-                                  email,
-                                  style: TextStyle(
+                                  userModel.email,
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w300,
                                     color: Colors.black,
                                   ),
                                 ),
-                                Divider(),
+                                const Divider(),
 
                                 // ── STATISTIK DINAMIS ──
                                 StreamBuilder<List<Portofolio>>(
                                   stream: _portofolioService
-                                      .getPortofoliosByUserId(currentUserId),
+                                      .getPortofoliosByUserId(
+                                        currentUserId,
+                                      ),
                                   builder: (context, portoSnapshot) {
                                     if (portoSnapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -304,20 +306,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   },
                                 ),
-                                Divider(),
+                                const Divider(),
 
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 12.0,
-                                    right: 12.0,
-                                    top: 10,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0,
                                   ),
                                   child: Text(
-                                    '"$bio"',
-                                    style: TextStyle(
+                                    '"${userModel.bio ?? "No Bio"}"',
+                                    style: const TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300,
                                     ),
+                                    textAlign: TextAlign.center,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -326,195 +327,214 @@ class _ProfilePageState extends State<ProfilePage> {
                             );
                           },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
 
-            // ── Section bawah: Portofolio saya (FIX) + Menu (scrollable) ──
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              top: 350, // sesuaikan agar mulai di bawah card profil
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── FIXED: Header "Portofolio saya" ──
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 12,
-                      bottom: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                  const SizedBox(height: 20),
+
+                  // ── Bagian Portofolio & Menu ──
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 12,
+                          bottom: 8,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.grid_view_rounded, size: 22),
-                            SizedBox(width: 8),
-                            Text(
-                              "Portofolio saya",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            Row(
+                              children: [
+                                Icon(Icons.grid_view_rounded, size: 22),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Portofolio saya",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => const AllPortofolioPage(),
+                                    transitionDuration: const Duration(
+                                      milliseconds: 400,
+                                    ),
+                                    reverseTransitionDuration: const Duration(
+                                      milliseconds: 300,
+                                    ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      final curvedAnimation = CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeOutCubic,
+                                      );
+                                      return SlideTransition(
+                                        position: Tween<Offset>(
+                                          begin: const Offset(0, 1),
+                                          end: Offset.zero,
+                                        ).animate(curvedAnimation),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Lihat semua",
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) =>
-                                    const AllPortofolioPage(),
-                                transitionDuration: const Duration(milliseconds: 400),
-                                reverseTransitionDuration: const Duration(milliseconds: 300),
-                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                  final curvedAnimation = CurvedAnimation(
-                                    parent: animation,
-                                    curve: Curves.easeOutCubic,
-                                  );
-                                  return SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(0, 1), // dari bawah
-                                      end: Offset.zero,           // ke posisi normal
-                                    ).animate(curvedAnimation),
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "Lihat semua",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // ── FIXED: Grid 3 foto terbaru (dinamis) ──
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: StreamBuilder<List<Portofolio>>(
-                      stream: _portofolioService.getPortofoliosByUserId(
-                        currentUserId,
                       ),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return Container(
-                            height: 110,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Belum ada portofolio",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          );
-                        }
 
-                        final portfolios = snapshot.data!.take(3).toList();
-
-                        return Row(
-                          children: portfolios.map((porto) {
-                            return Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 8),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.network(
-                                    porto.imageUrl,
-                                    height: 110,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
-                                      height: 110,
-                                      color: Colors.grey[200],
-                                      child: Icon(
-                                        Icons.broken_image,
-                                        color: Colors.grey,
+                      // Grid 3 foto terbaru
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: StreamBuilder<List<Portofolio>>(
+                          stream: _portofolioService.getPortofoliosByUserId(
+                            currentUserId,
+                          ),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Container(
+                                height: 110,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Belum ada portofolio",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              );
+                            }
+                            final portfolios = snapshot.data!.take(3).toList();
+                            return Row(
+                              children: portfolios.map((porto) {
+                                return Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _portofolioService.incrementViews(porto.id);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PortfolioDetailPage(
+                                              portfolio: porto,
+                                              showOtherPortfolios: false,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          porto.imageUrl,
+                                          height: 110,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => Container(
+                                            height: 110,
+                                            color: Colors.grey[200],
+                                            child: Icon(
+                                              Icons.broken_image,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
+                                );
+                              }).toList(),
+                            );
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Menu list (Menyatu dengan scroll utama)
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom:
+                              MediaQuery.of(context).padding.bottom +
+                              kBottomNavigationBarHeight +
+                              16,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () => context.push('/saved-portfolios'),
+                                child: _menuItem(
+                                  Icons.bookmark_border,
+                                  "Tersimpan",
+                                  "",
+                                  false,
                                 ),
                               ),
-                            );
-                          }).toList(),
-                        );
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: 16),
-
-                  // ── SCROLLABLE: Menu list ──
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.only(
-                        left: 16,
-                        right: 16,
-                        // MediaQuery.of(context).padding.bottom = tinggi safe area bawah (notch/gesture bar)
-                        // kBottomNavigationBarHeight = tinggi navbar (56dp standar Flutter)
-                        bottom:
-                            MediaQuery.of(context).padding.bottom +
-                            kBottomNavigationBarHeight +
-                            16,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade200),
-                        ),
-                        child: Column(
-                          children: [
-                            _menuItem(
-                              Icons.bookmark_border,
-                              "Tersimpan",
-                              "24",
-                              false,
-                            ),
-                            Divider(height: 1),
-                            _menuItem(
-                              Icons.favorite_border,
-                              "Disukai",
-                              "156",
-                              false,
-                            ),
-                            Divider(height: 1),
-                            _menuItem(Icons.settings, "Pengaturan", "", false),
-                            Divider(height: 1),
-                            GestureDetector(
-                              onTap: _showLogoutDialog,
-                              child: _menuItem(
-                                Icons.logout,
-                                "Keluar",
-                                "",
-                                true,
+                              Divider(height: 1),
+                              GestureDetector(
+                                onTap: () => context.push('/liked-portfolios'),
+                                child: _menuItem(
+                                  Icons.favorite_border,
+                                  "Disukai",
+                                  "",
+                                  false,
+                                ),
                               ),
-                            ),
-                          ],
+                              Divider(height: 1),
+                              _menuItem(Icons.settings, "Pengaturan", "", false),
+                              Divider(height: 1),
+                              GestureDetector(
+                                onTap: _showLogoutDialog,
+                                child: _menuItem(
+                                  Icons.logout,
+                                  "Keluar",
+                                  "",
+                                  true,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-
-
-
 }

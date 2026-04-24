@@ -102,7 +102,7 @@ class AllPortofolioPage extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8, bottom: 24),
             itemCount: docs.length,
             itemBuilder: (context, index) {
-              return PortofolioCard(data: docs[index]);
+              return PortofolioCard(data: docs[index], showOtherPortfolios: false);
             },
           );
         },
