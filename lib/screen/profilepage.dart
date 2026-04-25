@@ -100,7 +100,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              // ── Background Gradient atas ──
               Container(
                 height: 400,
                 decoration: const BoxDecoration(
@@ -112,9 +111,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
 
-              // ── Background putih bawah (dinamis mengikut scroll) ──
               Positioned(
-                top: 280, // Sedikit diturunkan agar gradient lebih terlihat
+                top: 280, 
                 left: 0,
                 right: 0,
                 bottom: -2000,
@@ -131,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               Column(
                 children: [
-                  // ── Judul "Profile" ──
+                  // Judul "Profile" 
                   Padding(
                     padding: const EdgeInsets.only(top: 16, left: 40),
                     child: Align(
@@ -149,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 20),
 
-                  // ── Card profil ──
+                  //Card profil
                   Stack(
                     alignment: Alignment.topCenter,
                     children: [
