@@ -71,11 +71,16 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () async {
               // Capture router SEBELUM async, supaya context tetap valid
               final router = GoRouter.of(context);
-              Navigator.of(dialogContext).pop(); // tutup popup
-              await AuthService().logout(); // jalankan logout
+
+               // tutup popup
+              Navigator.of(dialogContext).pop();
+
+              // jalankan logout
+              await AuthService().logout(); 
               router.go(
+                // pindah ke splash
                 '/splash?skip=true',
-              ); // redirect ke splash (lewati animasi)
+              ); 
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
