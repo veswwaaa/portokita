@@ -22,16 +22,20 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>();
 
 class AppRouter {
-  static String _initialLocation = '/splash';
-
-  /// Set initial location secara dinamis
-  static void setInitialLocation(String location) {
-    _initialLocation = location;
-  }
+  static bool _hasEvaluatedInitialLocation = false;
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: _initialLocation,
+    initialLocation: '/splash',
+    redirect: (context, state) {
+      if (!_hasEvaluatedInitialLocation) {
+        _hasEvaluatedInitialLocation = true;
+        if (state.uri.path != '/splash') {
+          return '/splash';
+        }
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/splash',

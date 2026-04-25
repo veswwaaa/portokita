@@ -178,14 +178,158 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                         Positioned(
                           top: 16,
                           right: 16,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.more_vert,
-                                color: Colors.white, size: 24),
+                          child: StreamBuilder<DocumentSnapshot>(
+                            stream: currentUserId != null
+                                ? _firebaseService.usersCollection.doc(currentUserId).snapshots()
+                                : null,
+                            builder: (context, userSnapshot) {
+                              bool isSaved = false;
+                              if (userSnapshot.hasData && userSnapshot.data!.exists) {
+                                final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
+                                final savedIds = List<String>.from(userData?['savedPortfolios'] ?? []);
+                                isSaved = savedIds.contains(porto.id);
+                              }
+
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                ),
+                                child: PopupMenuButton<String>(
+                                  padding: EdgeInsets.zero,
+                                  icon: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.5),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.more_vert,
+                                        color: Colors.white, size: 24),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  color: const Color(0xFF1A1A1A).withOpacity(0.95),
+                                  offset: const Offset(0, 50),
+                                  onSelected: (value) async {
+                                    if (value == 'bagikan') {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Tautan berhasil disalin!')),
+                                      );
+                                    } else if (value == 'simpan') {
+                                      if (currentUserId != null) {
+                                        if (isSaved) {
+                                          await _portofolioService.unsavePortfolio(porto.id, currentUserId);
+                                          if (mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Dihapus dari simpanan')),
+                                            );
+                                          }
+                                        } else {
+                                          await _portofolioService.savePortfolio(porto.id, currentUserId);
+                                          if (mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Portofolio berhasil disimpan')),
+                                            );
+                                          }
+                                        }
+                                      }
+                                    } else if (value == 'hapus') {
+                                      // Tampilkan dialog konfirmasi hapus
+                                      final confirm = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('Hapus Portofolio'),
+                                          content: const Text('Apakah Anda yakin ingin menghapus portofolio ini?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context, false),
+                                              child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+                                            ),
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context, true),
+                                              child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+
+                                      if (confirm == true && currentUserId != null) {
+                                        final success = await _portofolioService.deletePortfolio(porto.id, currentUserId);
+                                        if (success && mounted) {
+                                          Navigator.pop(context); // Tutup detail page
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Portofolio berhasil dihapus')),
+                                          );
+                                        }
+                                      }
+                                    }
+                                  },
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      value: 'bagikan',
+                                      height: 45,
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.share_outlined, color: Colors.white, size: 20),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            'Bagikan',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const PopupMenuDivider(height: 1),
+                                    PopupMenuItem(
+                                      value: 'simpan',
+                                      height: 45,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            isSaved ? Icons.bookmark : Icons.bookmark_border,
+                                            color: isSaved ? const Color(0xFFEE7F3C) : Colors.white,
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            isSaved ? 'Hapus dari Simpanan' : 'Simpan',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (currentUserId == porto.userId) ...[
+                                      const PopupMenuDivider(height: 1),
+                                      PopupMenuItem(
+                                        value: 'hapus',
+                                        height: 45,
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                            const SizedBox(width: 12),
+                                            Text(
+                                              'Hapus',
+                                              style: GoogleFonts.plusJakartaSans(
+                                                color: Colors.red,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            },
                           ),
                         ),
 
@@ -510,23 +654,6 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                       style: GoogleFonts.plusJakartaSans(fontSize: 14),
                     ),
                   ],
-                ),
-                const SizedBox(width: 20),
-                GestureDetector(
-                  onTap: () async {
-                    if (currentUserId != null) {
-                      if (isSaved) {
-                        await _portofolioService.unsavePortfolio(porto.id, currentUserId);
-                      } else {
-                        await _portofolioService.savePortfolio(porto.id, currentUserId);
-                      }
-                    }
-                  },
-                  child: Icon(
-                    isSaved ? Icons.bookmark : Icons.bookmark_border,
-                    size: 22,
-                    color: isSaved ? const Color(0xFFEE7F3C) : Colors.black54,
-                  ),
                 ),
                 const Spacer(),
                 Text(

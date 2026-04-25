@@ -235,7 +235,7 @@ class _LupaPasswordScreenState extends State<LupaPasswordScreen>
             Center(
               child: TextButton(
                 onPressed: () {
-                  context.pop();
+                  context.go('/splash?skip=true');
                 },
                 child: const Text(
                   "Kembali ke Login",

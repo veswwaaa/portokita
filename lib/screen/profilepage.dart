@@ -100,14 +100,26 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
+              // ── Background Gradient atas ──
+              Container(
+                height: 400,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFEE7F3C), Color(0xFFF49B33)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+
               // ── Background putih bawah (dinamis mengikut scroll) ──
               Positioned(
-                top: 260, // Memotong di tengah area kartu profil
+                top: 280, // Sedikit diturunkan agar gradient lebih terlihat
                 left: 0,
                 right: 0,
-                bottom: -2000, // Menutup hingga jauh ke bawah
+                bottom: -2000,
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(50),

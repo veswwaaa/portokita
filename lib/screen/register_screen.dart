@@ -245,7 +245,7 @@ class _RegisterFormContainerState extends State<RegisterFormContainer>
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Register Berhasil'),
-                            backgroundColor: Colors.greenAccent,
+                            backgroundColor: Colors.green,
                           ),
                         );
                       } else {

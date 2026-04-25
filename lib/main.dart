@@ -12,17 +12,7 @@ void main() async {
   //inisialisasi firebasenya
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Tentukan initial route berdasarkan saved state
-  final lastRoute = await AppStateService.getLastRoute();
-  final isFirstLaunch = await AppStateService.isFirstLaunch();
-
-  final initialRoute = (isFirstLaunch || lastRoute == null)
-      ? '/splash'
-      : lastRoute;
-
-  AppRouter.setInitialLocation(initialRoute);
-
-  runApp(MyApp(initialRoute: initialRoute));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {

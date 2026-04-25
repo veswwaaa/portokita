@@ -154,9 +154,9 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 200));
 
     if (isLoggedIn && mounted) {
-      // Simpan route sebelum navigasi
-      await AppStateService.saveLastRoute('/home');
-      context.go('/home');
+      final lastRoute = await AppStateService.getLastRoute();
+      final targetRoute = (lastRoute != null && lastRoute != '/splash') ? lastRoute : '/home';
+      context.go(targetRoute);
     } else {
       // 3. Geser ke Atas dan Tampilkan Form!
       if (mounted) {

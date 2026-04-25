@@ -475,9 +475,24 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
   }
 
   Widget _buildUploadButton() {
-    return SizedBox(
+    return Container(
       width: double.infinity,
       height: 55.0,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEE7F3C), Color(0xFFF49B33)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(50.0),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFEE7F3C).withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () async {
           // Validasi input
@@ -486,7 +501,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               _selectedKategori == null ||
               selectedImage == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('Harap lengkapi semua field dan pilih gambar'),
               ),
             );
@@ -506,7 +521,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
                 isDialogShowing = true;
                 return WillPopScope(
                   onWillPop: () async => false,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: const Center(child: CircularProgressIndicator()),
                 );
               },
             );
@@ -516,7 +531,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             String? uploadedUrl = await ImageUploadService.uploadImageToImgBB(
               selectedImage!,
             ).timeout(
-              Duration(seconds: 30),
+              const Duration(seconds: 30),
               onTimeout: () => null, // kalau timeout, return null
             );
 
@@ -527,7 +542,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               }
               if (mounted) {
                 ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                  SnackBar(content: Text('Gagal upload gambar. Periksa koneksi internet kamu.')),
+                  const SnackBar(content: Text('Gagal upload gambar. Periksa koneksi internet kamu.')),
                 );
               }
               return;
@@ -537,7 +552,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
             // Ambil user — pakai cachedUser dulu, baru fetch kalau null
             final authService = AuthService();
             final currentUser = AuthService.cachedUser ?? await authService.getCurrentUserData().timeout(
-              Duration(seconds: 10),
+              const Duration(seconds: 10),
               onTimeout: () => null,
             );
 
@@ -548,7 +563,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               }
               if (mounted) {
                 ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('Sesi telah habis, silakan login kembali.'),
                     backgroundColor: Colors.red,
                   ),
@@ -569,7 +584,7 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
                   : null,
               currentUser: currentUser,
             ).timeout(
-              Duration(seconds: 15),
+              const Duration(seconds: 15),
               onTimeout: () => null,
             );
 
@@ -582,14 +597,14 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
 
             if (mounted) {
               ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Portfolio berhasil diupload!'),
                   backgroundColor: Colors.green,
                   duration: Duration(seconds: 2),
                 ),
               );
 
-              await Future.delayed(Duration(milliseconds: 800));
+              await Future.delayed(const Duration(milliseconds: 800));
 
               if (mounted) {
                 scaffoldContext.go('/home');
@@ -614,7 +629,8 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF475B99),
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -622,8 +638,8 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.upload, color: Colors.white),
-            SizedBox(width: 10.0),
+            const Icon(Icons.upload, color: Colors.white),
+            const SizedBox(width: 10.0),
             Text(
               'Upload Portfolio',
               style: GoogleFonts.plusJakartaSans(

@@ -132,7 +132,7 @@ class _LoginFormContainerState extends State<LoginFormContainer> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Login Berhasil'),
-                          backgroundColor: Colors.greenAccent,
+                          backgroundColor: Colors.green,
                         ),
                       );
                     } else {
