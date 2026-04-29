@@ -37,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
       backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // ── Header Orange ──
+          // Header
           Container(
             width: double.infinity,
             padding: EdgeInsets.only(
