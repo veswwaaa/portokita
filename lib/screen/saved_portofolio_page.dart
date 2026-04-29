@@ -84,7 +84,7 @@ class SavedPortofolioPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 itemCount: portos.length,
                 itemBuilder: (context, index) {
-                 
+                
                   
                   return StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseService().PortofolioCollection.doc(portos[index].id).snapshots(),
@@ -94,7 +94,7 @@ class SavedPortofolioPage extends StatelessWidget {
                       }
                       return PortofolioCard(
                         data: docSnapshot.data!,
-                        showOtherPortfolios: true, // Karena ini bisa portofolio orang lain
+                        showOtherPortfolios: true, 
                       );
                     },
                   );
