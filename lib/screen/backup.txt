@@ -180,7 +180,7 @@ Scaffold(
                       },
                       child: const Text(
                         "Daftar",
-                        style: TextStyle(color: Color(0xFF4DB6AC)),
+                        
                       ),
                     ),
                   ],
