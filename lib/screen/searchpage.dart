@@ -105,7 +105,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
 
-          // ── Category Filters ──
+          // Category Filters 
           const SizedBox(height: 10),
           SizedBox(
             height: 50,
