@@ -88,7 +88,7 @@ class AllPortofolioPage extends StatelessWidget {
             );
           }
 
-          // Sort docs by createdAt descending (terbaru di atas)
+          // ngurutin dokumen berdasarkan created at -> turun kebawah (terbaru di atas)
           final docs = snapshot.data!.docs.toList();
           docs.sort((a, b) {
             final aDate = (a.data() as Map<String, dynamic>)['createdAt'];
@@ -97,7 +97,7 @@ class AllPortofolioPage extends StatelessWidget {
             return bDate.compareTo(aDate);
           });
 
-          // Data state — show portfolios
+          // Data state — nampilin portfolios
           return ListView.builder(
             padding: const EdgeInsets.only(top: 8, bottom: 24),
             itemCount: docs.length,
