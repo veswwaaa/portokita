@@ -55,7 +55,6 @@ class AllPortofolioPage extends StatelessWidget {
             );
           }
 
-          // Empty state
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
               child: Column(
