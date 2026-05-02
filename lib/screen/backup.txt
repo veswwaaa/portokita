@@ -14,7 +14,50 @@ Scaffold(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [  nbjk
-                
+                const Text(
+                  "Daftar",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Mulai perjalanan profile baru mu",
+                  style: TextStyle(color: Colors.black54, fontSize: 14),
+                ),
+                const SizedBox(height: 30),
+          
+                // Form Fields yeah
+                _buildLabel("Username"),
+                _buildTextField(
+                  hint: "masukkan username",
+                  icon: Icons.supervised_user_circle_outlined,
+                  textController: usernameController,
+                ),
+                const SizedBox(height: 15),
+          
+                _buildLabel("Email"),
+                _buildTextField(
+                  hint: "masukkan email",
+                  icon: Icons.email_outlined,
+                  textController: emailController,
+                ),
+                const SizedBox(height: 15),
+                _buildLabel("Pilih Jurusanmu"),
+                _buildDropdownField(),
+          
+                const SizedBox(height: 15),
+          
+                _buildLabel("Password"),
+                _buildTextField(
+                  hint: "masukkan password",
+                  icon: Icons.lock_outline,
+                  textController: passwordController,
+                  isPass: !_showPassword,
+                  onPasswordVisibilityToggle: () {
+                    setState(() {
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                ),
           
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
