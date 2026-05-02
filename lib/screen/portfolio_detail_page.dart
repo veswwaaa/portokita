@@ -174,7 +174,7 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                           ),
                         ),
 
-                        // More Button
+                        //  Button
                         Positioned(
                           top: 16,
                           right: 16,
