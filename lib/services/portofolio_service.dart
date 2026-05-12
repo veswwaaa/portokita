@@ -213,14 +213,49 @@ class PortofolioService {
   }
 
   Future<bool> toggleLike(Portofolio portofolio, String userId) async {
-    bool isLiked = portofolio.likedBy.contains(userId);
+    try {
+      final docRef = _firebaseService.PortofolioCollection.doc(portofolio.id);
+      final userRef = _firebaseService.usersCollection.doc(userId);
 
-    if (isLiked) {
-      await unlikePortofolio(portofolio.id, userId);
+      bool newIsLiked = false;
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(docRef);
+        if (!snapshot.exists) {
+          throw Exception("Portfolio does not exist!");
+        }
+
+        final data = snapshot.data() as Map<String, dynamic>;
+        final likedBy = List<String>.from(data['likedBy'] ?? []);
+        final isLiked = likedBy.contains(userId);
+
+        if (isLiked) {
+          // Unlike
+          transaction.update(docRef, {
+            'likedBy': FieldValue.arrayRemove([userId]),
+            'likes': FieldValue.increment(-1),
+          });
+          transaction.update(userRef, {
+            'likedPortfolios': FieldValue.arrayRemove([portofolio.id]),
+          });
+          newIsLiked = false;
+        } else {
+          // Like
+          transaction.update(docRef, {
+            'likedBy': FieldValue.arrayUnion([userId]),
+            'likes': FieldValue.increment(1),
+          });
+          transaction.update(userRef, {
+            'likedPortfolios': FieldValue.arrayUnion([portofolio.id]),
+          });
+          newIsLiked = true;
+        }
+      });
+
+      return newIsLiked;
+    } catch (e) {
+      print('error toggle like: $e');
       return false;
-    } else {
-      await likePortofolio(portofolio.id, userId);
-      return true;
     }
   }
 

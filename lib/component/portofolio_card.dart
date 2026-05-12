@@ -4,6 +4,7 @@ import '../services/portofolio_service.dart';
 import '../services/firebase_service.dart';
 import '../models/portofolio_model.dart';
 import '../screen/portfolio_detail_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PortofolioCard extends StatefulWidget {
   final DocumentSnapshot data;
@@ -104,6 +105,18 @@ class _CardPortofolioState extends State<PortofolioCard> {
                           width: double.infinity,
                           height: 250,
                           fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: Container(
+                                width: double.infinity,
+                                height: 250,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
                               width: double.infinity,

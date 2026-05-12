@@ -8,6 +8,7 @@ import '../services/firebase_service.dart';
 import '../services/comment_service.dart';
 import '../services/auth_service.dart';
 import '../component/portofolio_card.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PortfolioDetailPage extends StatefulWidget {
   final Portofolio portfolio;
@@ -144,6 +145,18 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                               width: double.infinity,
                               height: 350,
                               fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 350,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              },
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
                                   width: double.infinity,

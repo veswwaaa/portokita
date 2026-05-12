@@ -8,6 +8,7 @@ import '../services/firebase_service.dart';
 import '../services/portofolio_service.dart';
 import 'all_portofolio_page_profile.dart';
 import 'portfolio_detail_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -468,6 +469,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                           porto.imageUrl,
                                           height: 110,
                                           fit: BoxFit.cover,
+                                          loadingBuilder: (context, child, loadingProgress) {
+                                            if (loadingProgress == null) return child;
+                                            return Shimmer.fromColors(
+                                              baseColor: Colors.grey[300]!,
+                                              highlightColor: Colors.grey[100]!,
+                                              child: Container(
+                                                height: 110,
+                                                color: Colors.white,
+                                              ),
+                                            );
+                                          },
                                           errorBuilder: (_, __, ___) => Container(
                                             height: 110,
                                             color: Colors.grey[200],
