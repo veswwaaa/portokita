@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
-import 'services/app_state_service.dart';
 import 'services/app_lifecycle_observer.dart';
 
 void main() async {

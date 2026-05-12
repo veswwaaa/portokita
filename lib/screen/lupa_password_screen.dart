@@ -28,6 +28,7 @@ class _LupaPasswordScreenState extends State<LupaPasswordScreen>
 
   @override
   void initState() {
+    print(_selectJurusan);
     super.initState();
 
     _slideController = AnimationController(

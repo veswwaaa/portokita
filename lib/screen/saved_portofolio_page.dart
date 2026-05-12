@@ -3,9 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import '../models/portofolio_model.dart';
-import '../models/user_model.dart';
 import '../services/portofolio_service.dart';
-import '../services/auth_service.dart';
 import '../services/firebase_service.dart';
 import '../component/portofolio_card.dart';
 

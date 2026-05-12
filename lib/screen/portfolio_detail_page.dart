@@ -620,6 +620,7 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
             : null,
           builder: (context, userSnapshot) {
             bool isSaved = false;
+            print(isSaved);
             if (userSnapshot.hasData && userSnapshot.data!.exists) {
               final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
               final savedIds = List<String>.from(userData?['savedPortfolios'] ?? []);

@@ -5,9 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import '../services/portofolio_service.dart';
 import '../services/image_upload_service.dart';
-import '../services/firebase_service.dart';
 import '../services/auth_service.dart';
-import '../models/portofolio_model.dart';
 
 class UploadPortfolio extends StatefulWidget {
   const UploadPortfolio({super.key});

@@ -23,6 +23,7 @@ class ImageUploadService {
         imageFile.path,
         quality: 70,
       );
+      print(compressedBytes);
       final imgbb = Imgbb(_apiKey);
 
       final response = await imgbb.uploadImageFile(
@@ -30,7 +31,7 @@ class ImageUploadService {
         // expiration: 999999,
       );
 
-      if (response != null && response.url != null) {
+      if (response != null) {
         String newUrl = response.url.replaceAll('.co/', '.co.com/');
         return newUrl;
       } else {

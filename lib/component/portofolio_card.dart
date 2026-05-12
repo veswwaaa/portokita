@@ -23,12 +23,13 @@ class PortofolioCard extends StatefulWidget {
 class _CardPortofolioState extends State<PortofolioCard> {
   final PortofolioService _portofolioService = PortofolioService();
   final FirebaseService _firebaseService = FirebaseService();
-  String _getMonthName(int month) {
-    const months = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus","September", "Oktober","November","Desember"
-    ];
-    return months[month - 1];
-  }
+  // String _getMonthName(int month) {
+  //   const months = [
+  //     "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus","September", "Oktober","November","Desember"
+  //   ];
+    
+  //   return months[month - 1];
+  // }
 
   @override
   Widget build(BuildContext context) {

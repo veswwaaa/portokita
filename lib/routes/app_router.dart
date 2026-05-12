@@ -9,7 +9,6 @@ import '../screen/profilepage.dart';
 // import '../screen/splash_screen.dart';
 import '../screen/splash_screen1.dart';
 import '../screen/register_screen.dart';
-import '../component/login_screen.dart';
 import '../screen/lupa_password_screen.dart';
 import '../screen/edit_profile_page.dart';
 import '../screen/saved_portofolio_page.dart';

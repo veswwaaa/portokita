@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'app_state_service.dart';
 
 class AppLifecycleObserver extends WidgetsBindingObserver {
   final GoRouter router;
@@ -10,6 +9,7 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(_lastState);
     _lastState = state;
   }
 }
