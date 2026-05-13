@@ -501,7 +501,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       const SizedBox(height: 16),
 
-                      // Menu list (Menyatu dengan scroll utama)
+                      // list menu
                       Padding(
                         padding: EdgeInsets.only(
                           left: 16,
