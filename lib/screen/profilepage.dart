@@ -349,7 +349,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 20),
 
-                  // ── Bagian Portofolio & Menu
+                  //Bagian Portofolio & Menu
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
