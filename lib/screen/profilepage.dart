@@ -426,7 +426,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
 
-                      
+                      // Grid 3 foto terbaru
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: StreamBuilder<List<Portofolio>>(
