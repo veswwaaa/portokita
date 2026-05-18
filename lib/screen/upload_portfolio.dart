@@ -530,7 +530,10 @@ class _UploadPortfolioState extends State<UploadPortfolio> {
               selectedImage!,
             ).timeout(
               const Duration(seconds: 30),
-              onTimeout: () => null, // kalau timeout, return null
+              onTimeout: () {
+                print('>>> [DEBUG UI] TIMEOUT! Upload gambar ImgBB butuh waktu lebih dari 30 detik. Ini biasanya akibat koneksi diblokir (rate-limit) karena SPAM upload.');
+                return null;
+              },
             );
 
             if (uploadedUrl == null) {

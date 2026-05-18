@@ -14,7 +14,6 @@ class FirebaseService {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  ///FirebaseFirestore = untuk database (crud data)
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   //Collections
